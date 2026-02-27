@@ -12,15 +12,24 @@ struct KlaudimeroApp: App {
 
     var body: some Scene {
         WindowGroup {
-            JobListView()
-                .environmentObject(APIClient.shared)
-                .environmentObject(navigationState)
-                .sheet(item: $navigationState.pendingExecutionId) { executionId in
-                    NavigationStack {
-                        ExecutionLoadingView(executionId: executionId)
-                            .environmentObject(APIClient.shared)
+            TabView {
+                JobListView()
+                    .tabItem {
+                        Label("Jobs", systemImage: "clock.arrow.circlepath")
                     }
+                HeartbeatView()
+                    .tabItem {
+                        Label("Heartbeat", systemImage: "heart.circle")
+                    }
+            }
+            .environmentObject(APIClient.shared)
+            .environmentObject(navigationState)
+            .sheet(item: $navigationState.pendingExecutionId) { executionId in
+                NavigationStack {
+                    ExecutionLoadingView(executionId: executionId)
+                        .environmentObject(APIClient.shared)
                 }
+            }
         }
     }
 }

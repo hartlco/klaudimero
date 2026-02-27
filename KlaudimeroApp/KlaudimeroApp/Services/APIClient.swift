@@ -113,6 +113,24 @@ class APIClient: ObservableObject {
         try await request("GET", "/executions/latest")
     }
 
+    // MARK: - Heartbeat
+
+    func getHeartbeat() async throws -> HeartbeatStatus {
+        try await request("GET", "/heartbeat")
+    }
+
+    func updateHeartbeat(_ update: HeartbeatConfigUpdate) async throws -> HeartbeatStatus {
+        try await request("PUT", "/heartbeat", body: update)
+    }
+
+    func listHeartbeatExecutions() async throws -> [Execution] {
+        try await request("GET", "/heartbeat/executions")
+    }
+
+    func triggerHeartbeat() async throws -> [String: String] {
+        try await request("POST", "/heartbeat/trigger")
+    }
+
     // MARK: - Devices
 
     func registerDevice(token: String, name: String?) async throws {

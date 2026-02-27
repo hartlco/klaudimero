@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .config import JOBS_DIR, EXECUTIONS_DIR, DEVICES_FILE
-from .models import Job, Execution, Device
+from .config import JOBS_DIR, EXECUTIONS_DIR, DEVICES_FILE, HEARTBEAT_CONFIG_FILE, HEARTBEAT_PROMPT_FILE
+from .models import Job, Execution, Device, HeartbeatConfig
 
 
 # --- Jobs ---
@@ -80,6 +80,28 @@ def load_latest_execution() -> Execution | None:
     if latest_path:
         latest = Execution.model_validate_json(latest_path.read_text())
     return latest
+
+
+# --- Heartbeat ---
+
+def load_heartbeat_config() -> HeartbeatConfig:
+    if HEARTBEAT_CONFIG_FILE.exists():
+        return HeartbeatConfig.model_validate_json(HEARTBEAT_CONFIG_FILE.read_text())
+    return HeartbeatConfig()
+
+
+def save_heartbeat_config(config: HeartbeatConfig) -> None:
+    HEARTBEAT_CONFIG_FILE.write_text(config.model_dump_json(indent=2))
+
+
+def load_heartbeat_prompt() -> str:
+    if HEARTBEAT_PROMPT_FILE.exists():
+        return HEARTBEAT_PROMPT_FILE.read_text()
+    return ""
+
+
+def save_heartbeat_prompt(prompt: str) -> None:
+    HEARTBEAT_PROMPT_FILE.write_text(prompt)
 
 
 # --- Devices ---

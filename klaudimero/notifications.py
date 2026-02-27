@@ -83,3 +83,68 @@ async def notify_job_event(job: Job, execution: Execution, event: str) -> None:
                 )
     except Exception as e:
         logger.error(f"APNs error: {e}")
+
+
+async def notify_heartbeat_event(execution: Execution, event: str) -> None:
+    """Send push notification for heartbeat execution."""
+    apns_config = load_apns_config()
+    if not apns_config:
+        return
+
+    devices = load_all_devices()
+    if not devices:
+        return
+
+    try:
+        from aioapns import APNs, NotificationRequest
+    except ImportError:
+        logger.warning("aioapns not installed, skipping push notifications")
+        return
+
+    key_file = apns_config.get("key_file")
+    key_id = apns_config.get("key_id")
+    team_id = apns_config.get("team_id")
+    bundle_id = apns_config.get("bundle_id")
+
+    if not all([key_file, key_id, team_id, bundle_id]):
+        return
+
+    if event == "completed":
+        title = "Heartbeat Completed"
+        body = f"Finished in {execution.duration_seconds or 0:.1f}s"
+    else:
+        title = "Heartbeat Failed"
+        body = f"Exit code: {execution.exit_code}"
+
+    try:
+        with open(key_file) as f:
+            key_content = f.read()
+
+        apns = APNs(
+            key=key_content,
+            key_id=key_id,
+            team_id=team_id,
+            topic=bundle_id,
+            use_sandbox=apns_config.get("sandbox", False),
+        )
+
+        for device in devices:
+            request = NotificationRequest(
+                device_token=device.token,
+                message={
+                    "aps": {
+                        "alert": {"title": title, "body": body},
+                        "sound": "default",
+                    },
+                    "heartbeat": True,
+                    "execution_id": execution.id,
+                    "event": event,
+                },
+            )
+            response = await apns.send_notification(request)
+            if not response.is_successful:
+                logger.warning(
+                    f"Failed to send push to {device.token[:8]}...: {response.description}"
+                )
+    except Exception as e:
+        logger.error(f"APNs error (heartbeat): {e}")

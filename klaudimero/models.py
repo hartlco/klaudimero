@@ -70,6 +70,30 @@ class Execution(BaseModel):
 
 # --- Device ---
 
+# --- Heartbeat ---
+
+class HeartbeatConfig(BaseModel):
+    enabled: bool = False
+    interval_minutes: int = 30
+    max_turns: int = 50
+
+
+class HeartbeatConfigUpdate(BaseModel):
+    enabled: Optional[bool] = None
+    interval_minutes: Optional[int] = None
+    max_turns: Optional[int] = None
+    prompt: Optional[str] = None
+
+
+class HeartbeatStatus(BaseModel):
+    enabled: bool
+    interval_minutes: int
+    max_turns: int
+    prompt: str
+
+
+# --- Device ---
+
 class DeviceRegister(BaseModel):
     token: str
     name: Optional[str] = None
