@@ -1,15 +1,32 @@
 import SwiftUI
 
+class NavigationState: ObservableObject {
+    static let shared = NavigationState()
+    @Published var pendingExecutionId: String?
+}
+
 @main
 struct KlaudimeroApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var navigationState = NavigationState.shared
 
     var body: some Scene {
         WindowGroup {
             JobListView()
                 .environmentObject(APIClient.shared)
+                .environmentObject(navigationState)
+                .sheet(item: $navigationState.pendingExecutionId) { executionId in
+                    NavigationStack {
+                        ExecutionLoadingView(executionId: executionId)
+                            .environmentObject(APIClient.shared)
+                    }
+                }
         }
     }
+}
+
+extension String: @retroactive Identifiable {
+    public var id: String { self }
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -27,8 +44,17 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         print("Failed to register for remote notifications: \(error)")
     }
 
-    // Show notifications even when app is in foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .sound])
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        if let executionId = userInfo["execution_id"] as? String {
+            DispatchQueue.main.async {
+                NavigationState.shared.pendingExecutionId = executionId
+            }
+        }
+        completionHandler()
     }
 }
