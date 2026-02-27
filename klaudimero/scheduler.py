@@ -61,11 +61,10 @@ def parse_schedule(schedule: str) -> CronTrigger | IntervalTrigger:
 
 
 def _make_job_runner(job: Job):
-    """Create a sync wrapper that schedules the async run_job."""
-    def runner():
+    """Create an async wrapper that runs the job."""
+    async def runner():
         from .executor import run_job
-        loop = asyncio.get_event_loop()
-        loop.create_task(run_job(job))
+        await run_job(job)
     return runner
 
 
