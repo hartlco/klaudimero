@@ -7,17 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10000010000000000000001 /* KlaudimeroApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001; };
-		A10000010000000000000002 /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002; };
-		A10000010000000000000003 /* Execution.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003; };
-		A10000010000000000000004 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004; };
-		A10000010000000000000005 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005; };
-		A10000010000000000000006 /* JobListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006; };
-		A10000010000000000000007 /* JobDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007; };
-		A10000010000000000000008 /* JobFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008; };
-		A10000010000000000000009 /* ExecutionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009; };
-		A1000001000000000000000A /* ExecutionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A; };
-		A1000001000000000000000B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B; };
+		A10000010000000000000001 /* KlaudimeroApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* KlaudimeroApp.swift */; };
+		A10000010000000000000002 /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* Job.swift */; };
+		A10000010000000000000003 /* Execution.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* Execution.swift */; };
+		A10000010000000000000004 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* APIClient.swift */; };
+		A10000010000000000000005 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* NotificationService.swift */; };
+		A10000010000000000000006 /* JobListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* JobListView.swift */; };
+		A10000010000000000000007 /* JobDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* JobDetailView.swift */; };
+		A10000010000000000000008 /* JobFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* JobFormView.swift */; };
+		A10000010000000000000009 /* ExecutionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* ExecutionListView.swift */; };
+		A1000001000000000000000A /* ExecutionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* ExecutionDetailView.swift */; };
+		A1000001000000000000000B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +33,7 @@
 		A2000001000000000000000A /* ExecutionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionDetailView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A30000010000000000000001 /* KlaudimeroApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KlaudimeroApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KlaudimeroApp.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -47,6 +48,7 @@
 		A40000010000000000000002 /* KlaudimeroApp */ = {
 			isa = PBXGroup;
 			children = (
+				C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */,
 				A20000010000000000000001 /* KlaudimeroApp.swift */,
 				A40000010000000000000003 /* Models */,
 				A40000010000000000000004 /* Services */,
@@ -215,8 +217,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KlaudimeroApp/KlaudimeroApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9E8SXF3Y36;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -238,8 +242,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KlaudimeroApp/KlaudimeroApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9E8SXF3Y36;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
