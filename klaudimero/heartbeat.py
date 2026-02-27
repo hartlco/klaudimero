@@ -25,19 +25,23 @@ _heartbeat_lock = asyncio.Lock()
 DEFAULT_HEARTBEAT_PROMPT = """\
 You are the Klaudimero heartbeat agent. The user's timezone is Europe/Berlin.
 
-IMPORTANT: Your response determines whether the user gets a push notification.
-- If you respond with exactly "OK", NO push is sent. This is the default.
-- Any other response WILL be sent as a push notification to the user's phone.
-
 Rules:
-- Only respond with something other than "OK" if there is something the user needs to know or act on.
-- Routine status checks passing is NOT worth notifying about.
-- If it is between 22:00 and 08:00 in the user's timezone, always respond "OK". Do not disturb nighttime.
-- Do not repeatedly notify about the same thing. If you already reported something in a recent execution, do not mention it again unless the situation has changed. Check recent heartbeat executions: curl -s http://localhost:8585/heartbeat/executions?limit=5
+- If it is between 22:00 and 08:00 in the user's timezone, skip all tasks and go straight to the status line.
+- Do not repeatedly notify about the same thing. Check recent heartbeat executions first: curl -s http://localhost:8585/heartbeat/executions?limit=5
+- Only notify about things the user needs to know or act on. Routine checks passing is NOT worth notifying.
 
 Tasks:
 - Verify Klaudimero API is responding: curl -s http://localhost:8585/
 - Verify scheduled jobs are loaded: curl -s http://localhost:8585/jobs
+"""
+
+HEARTBEAT_SUFFIX = """
+---
+IMPORTANT — OUTPUT FORMAT (do not ignore):
+Your ENTIRE response must end with a status line on its own line.
+If there is nothing for the user to act on: end with exactly "STATUS:OK"
+If there is something the user should know: end with exactly "STATUS:NOTIFY"
+Everything before the status line will be sent as a push notification if STATUS:NOTIFY.
 """
 
 
@@ -59,12 +63,13 @@ async def run_heartbeat() -> Execution:
         if removed:
             logger.info(f"Cleaned up {removed} old execution logs")
 
-        prompt = load_heartbeat_prompt()
+        user_prompt = load_heartbeat_prompt()
+        full_prompt = user_prompt + HEARTBEAT_SUFFIX
         config = load_heartbeat_config()
 
         execution = Execution(
             job_id=HEARTBEAT_JOB_ID,
-            prompt=prompt,
+            prompt=user_prompt,
             status=ExecutionStatus.running,
         )
         save_execution(execution)
@@ -75,7 +80,7 @@ async def run_heartbeat() -> Execution:
             cmd = [
                 "claude",
                 "-p",
-                prompt,
+                full_prompt,
                 "--output-format", "text",
                 "--max-turns", str(config.max_turns),
             ]
@@ -111,13 +116,23 @@ async def run_heartbeat() -> Execution:
         execution.finished_at = datetime.now(timezone.utc)
         save_execution(execution)
 
-        # Only send push if failed or output has something to report
-        # Treat any output that is just "ok" (with optional punctuation/whitespace) as nothing to report
-        stripped = execution.output.strip().rstrip(".!").strip().upper()
+        # Parse status code from output and strip it
+        output = execution.output.strip()
+        should_notify = False
         if execution.status == ExecutionStatus.failed:
-            await notify_heartbeat_event(execution, "failed")
-        elif stripped and stripped != "OK":
-            await notify_heartbeat_event(execution, "completed")
+            should_notify = True
+        elif output.endswith("STATUS:NOTIFY"):
+            output = output[: -len("STATUS:NOTIFY")].strip()
+            should_notify = True
+        elif output.endswith("STATUS:OK"):
+            output = output[: -len("STATUS:OK")].strip()
+
+        execution.output = output
+        save_execution(execution)
+
+        if should_notify:
+            event = "completed" if execution.status != ExecutionStatus.failed else "failed"
+            await notify_heartbeat_event(execution, event)
 
         return execution
 
