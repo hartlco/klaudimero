@@ -22,15 +22,12 @@ logger = logging.getLogger("klaudimero.heartbeat")
 _heartbeat_lock = asyncio.Lock()
 
 DEFAULT_HEARTBEAT_PROMPT = """\
-You are a workspace heartbeat agent. Your job is to periodically review the workspace and help keep things tidy.
+You are the Klaudimero heartbeat agent. Verify that the Klaudimero service is healthy.
 
-Instructions:
-1. Read ~/CLAUDE.md to understand the workspace and available projects.
-2. Pick one or two projects and do a quick review — look for obvious issues, outdated TODOs, broken configs, etc.
-3. If you find small, safe fixes (typos, stale comments, minor cleanups), go ahead and fix them.
-4. For bigger discoveries or suggestions, send a push notification using:
-   cd ~/code/klaudimero && source .venv/bin/activate && python3 ~/clawd/tools/notify.py "Heartbeat" "Description of finding"
-5. Keep your output concise — summarize what you checked and any actions taken.
+Check that the API is responding: curl -s http://localhost:8585/
+Check that scheduled jobs are loaded: curl -s http://localhost:8585/jobs
+
+Only report if something is broken. If everything is fine, just say "OK".
 """
 
 
