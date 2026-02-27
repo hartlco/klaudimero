@@ -103,3 +103,23 @@ class Device(BaseModel):
     token: str
     name: Optional[str] = None
     registered_at: datetime = Field(default_factory=_utcnow)
+
+
+# --- Chat ---
+
+class ChatMessage(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str
+
+
+class ChatRequest(BaseModel):
+    content: str
+    max_turns: int = 50
+
+
+class ChatSession(BaseModel):
+    id: str = Field(default_factory=_new_id)
+    title: str = ""
+    messages: list[ChatMessage] = []
+    created_at: datetime = Field(default_factory=_utcnow)
+    updated_at: datetime = Field(default_factory=_utcnow)

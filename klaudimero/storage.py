@@ -4,8 +4,8 @@ import json
 import time
 from pathlib import Path
 
-from .config import JOBS_DIR, EXECUTIONS_DIR, DEVICES_FILE, HEARTBEAT_CONFIG_FILE, HEARTBEAT_PROMPT_FILE
-from .models import Job, Execution, Device, HeartbeatConfig
+from .config import JOBS_DIR, EXECUTIONS_DIR, DEVICES_FILE, HEARTBEAT_CONFIG_FILE, HEARTBEAT_PROMPT_FILE, CHAT_SESSIONS_DIR
+from .models import Job, Execution, Device, HeartbeatConfig, ChatSession
 
 
 # --- Jobs ---
@@ -153,3 +153,33 @@ def delete_device(token: str) -> bool:
         return False
     _save_devices_raw(filtered)
     return True
+
+
+# --- Chat Sessions ---
+
+def save_chat_session(session: ChatSession) -> None:
+    path = CHAT_SESSIONS_DIR / f"{session.id}.json"
+    path.write_text(session.model_dump_json(indent=2))
+
+
+def load_chat_session(session_id: str) -> ChatSession | None:
+    path = CHAT_SESSIONS_DIR / f"{session_id}.json"
+    if not path.exists():
+        return None
+    return ChatSession.model_validate_json(path.read_text())
+
+
+def load_all_chat_sessions() -> list[ChatSession]:
+    sessions = []
+    for path in CHAT_SESSIONS_DIR.glob("*.json"):
+        sessions.append(ChatSession.model_validate_json(path.read_text()))
+    sessions.sort(key=lambda s: s.updated_at, reverse=True)
+    return sessions
+
+
+def delete_chat_session(session_id: str) -> bool:
+    path = CHAT_SESSIONS_DIR / f"{session_id}.json"
+    if path.exists():
+        path.unlink()
+        return True
+    return False

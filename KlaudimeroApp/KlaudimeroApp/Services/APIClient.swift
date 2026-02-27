@@ -131,6 +131,33 @@ class APIClient: ObservableObject {
         try await request("POST", "/heartbeat/trigger")
     }
 
+    // MARK: - Chat
+
+    func listChatSessions() async throws -> [ChatSessionSummary] {
+        try await request("GET", "/chat/sessions")
+    }
+
+    func createChatSession() async throws -> ChatSession {
+        try await request("POST", "/chat/sessions")
+    }
+
+    func getChatSession(_ id: String) async throws -> ChatSession {
+        try await request("GET", "/chat/sessions/\(id)")
+    }
+
+    func deleteChatSession(_ id: String) async throws {
+        try await requestVoid("DELETE", "/chat/sessions/\(id)")
+    }
+
+    func sendChatMessage(sessionId: String, content: String, maxTurns: Int = 50) async throws -> String {
+        struct Body: Codable {
+            let content: String
+            let max_turns: Int
+        }
+        let resp: ChatResponse = try await request("POST", "/chat/sessions/\(sessionId)/message", body: Body(content: content, max_turns: maxTurns))
+        return resp.response
+    }
+
     // MARK: - Devices
 
     func registerDevice(token: String, name: String?) async throws {

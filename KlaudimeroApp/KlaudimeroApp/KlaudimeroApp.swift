@@ -21,6 +21,10 @@ struct KlaudimeroApp: App {
                     .tabItem {
                         Label("Heartbeat", systemImage: "heart.circle")
                     }
+                ChatListView()
+                    .tabItem {
+                        Label("Chat", systemImage: "bubble.left.and.bubble.right")
+                    }
             }
             .environmentObject(APIClient.shared)
             .environmentObject(navigationState)

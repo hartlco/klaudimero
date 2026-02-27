@@ -4,7 +4,7 @@ import logging
 from fastapi import FastAPI
 
 from .scheduler import get_scheduler, load_and_schedule_all_jobs
-from .routers import jobs, executions, devices, heartbeat
+from .routers import jobs, executions, devices, heartbeat, chat
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,6 +39,7 @@ app.include_router(jobs.router)
 app.include_router(executions.router)
 app.include_router(devices.router)
 app.include_router(heartbeat.router)
+app.include_router(chat.router)
 
 
 @app.get("/")
