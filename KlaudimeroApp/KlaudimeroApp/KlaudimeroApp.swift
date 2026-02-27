@@ -13,6 +13,10 @@ struct KlaudimeroApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
+                ChatListView()
+                    .tabItem {
+                        Label("Chat", systemImage: "bubble.left.and.bubble.right")
+                    }
                 JobListView()
                     .tabItem {
                         Label("Jobs", systemImage: "clock.arrow.circlepath")
@@ -20,10 +24,6 @@ struct KlaudimeroApp: App {
                 HeartbeatView()
                     .tabItem {
                         Label("Heartbeat", systemImage: "heart.circle")
-                    }
-                ChatListView()
-                    .tabItem {
-                        Label("Chat", systemImage: "bubble.left.and.bubble.right")
                     }
             }
             .environmentObject(APIClient.shared)

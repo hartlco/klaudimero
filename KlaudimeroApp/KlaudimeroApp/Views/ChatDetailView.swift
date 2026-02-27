@@ -78,7 +78,6 @@ struct ChatDetailView: View {
                 } else {
                     Markdown(message.content)
                         .textSelection(.enabled)
-                        .markdownTheme(.gitHub)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(Color(.systemGray6))
@@ -126,7 +125,7 @@ struct ChatDetailView: View {
         let content = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { return }
 
-        messageText = ""
+        await MainActor.run { messageText = "" }
         // Optimistically add user message
         session?.messages.append(ChatMessage(role: "user", content: content))
 
