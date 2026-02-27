@@ -1,4 +1,5 @@
 import SwiftUI
+import MarkdownUI
 
 struct ExecutionDetailView: View {
     let execution: Execution
@@ -17,13 +18,14 @@ struct ExecutionDetailView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Output — front and center
+                // Output — rendered as Markdown
                 if execution.output.isEmpty {
                     Text("(no output)")
                         .foregroundStyle(.secondary)
                 } else {
-                    Text(LocalizedStringKey(execution.output))
+                    Markdown(execution.output)
                         .textSelection(.enabled)
+                        .markdownTheme(.gitHub)
                 }
 
                 Divider()
