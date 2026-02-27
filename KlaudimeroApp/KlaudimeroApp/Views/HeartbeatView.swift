@@ -149,6 +149,8 @@ struct HeartbeatView: View {
         isTriggering = true
         do {
             _ = try await api.triggerHeartbeat()
+            try await Task.sleep(for: .seconds(1))
+            await load()
         } catch {
             self.error = error.localizedDescription
         }
