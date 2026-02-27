@@ -6,55 +6,50 @@ struct ExecutionDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // Status header
+                // Status bar
                 HStack {
                     Text(execution.statusEmoji)
-                        .font(.title)
                     Text(execution.status.capitalized)
-                        .font(.title2.bold())
+                        .font(.subheadline.bold())
                     Spacer()
                     Text(execution.formattedDuration)
-                        .font(.headline)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
 
-                Divider()
-
-                // Metadata
-                Group {
-                    LabeledContent("Started", value: execution.startedAt.formatted())
-                    if let finished = execution.finishedAt {
-                        LabeledContent("Finished", value: finished.formatted())
-                    }
-                    if let exitCode = execution.exitCode {
-                        LabeledContent("Exit Code", value: "\(exitCode)")
-                    }
+                // Output — front and center
+                if execution.output.isEmpty {
+                    Text("(no output)")
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text(LocalizedStringKey(execution.output))
+                        .textSelection(.enabled)
                 }
 
                 Divider()
 
                 // Prompt
-                Text("Prompt")
-                    .font(.headline)
-                Text(execution.prompt)
-                    .font(.body.monospaced())
-                    .padding(8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                DisclosureGroup("Prompt") {
+                    Text(execution.prompt)
+                        .font(.body.monospaced())
+                        .padding(8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(.systemGray6))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
 
-                Divider()
-
-                // Output
-                Text("Output")
-                    .font(.headline)
-                Text(execution.output.isEmpty ? "(no output)" : execution.output)
-                    .font(.caption.monospaced())
-                    .padding(8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .textSelection(.enabled)
+                // Metadata
+                DisclosureGroup("Details") {
+                    VStack(spacing: 8) {
+                        LabeledContent("Started", value: execution.startedAt.formatted())
+                        if let finished = execution.finishedAt {
+                            LabeledContent("Finished", value: finished.formatted())
+                        }
+                        if let exitCode = execution.exitCode {
+                            LabeledContent("Exit Code", value: "\(exitCode)")
+                        }
+                    }
+                }
             }
             .padding()
         }
