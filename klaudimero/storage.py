@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from pathlib import Path
 
 from .config import JOBS_DIR, EXECUTIONS_DIR, DEVICES_FILE, HEARTBEAT_CONFIG_FILE, HEARTBEAT_PROMPT_FILE
@@ -80,6 +81,23 @@ def load_latest_execution() -> Execution | None:
     if latest_path:
         latest = Execution.model_validate_json(latest_path.read_text())
     return latest
+
+
+def cleanup_old_executions(max_age_days: int = 3) -> int:
+    """Delete execution logs older than max_age_days. Returns number of files removed."""
+    cutoff = time.time() - (max_age_days * 86400)
+    removed = 0
+    for job_dir in EXECUTIONS_DIR.iterdir():
+        if not job_dir.is_dir():
+            continue
+        for path in job_dir.glob("*.json"):
+            if path.stat().st_mtime < cutoff:
+                path.unlink()
+                removed += 1
+        # Remove empty directories
+        if job_dir.is_dir() and not any(job_dir.iterdir()):
+            job_dir.rmdir()
+    return removed
 
 
 # --- Heartbeat ---

@@ -11,6 +11,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from .config import HEARTBEAT_JOB_ID
 from .models import Execution, ExecutionStatus, HeartbeatConfig
 from .storage import (
+    cleanup_old_executions,
     load_heartbeat_config,
     load_heartbeat_prompt,
     save_heartbeat_prompt,
@@ -53,6 +54,11 @@ async def run_heartbeat() -> Execution:
     from .notifications import notify_heartbeat_event
 
     async with _heartbeat_lock:
+        # Clean up execution logs older than 3 days
+        removed = cleanup_old_executions(max_age_days=3)
+        if removed:
+            logger.info(f"Cleaned up {removed} old execution logs")
+
         prompt = load_heartbeat_prompt()
         config = load_heartbeat_config()
 
