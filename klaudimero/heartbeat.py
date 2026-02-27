@@ -27,7 +27,7 @@ You are the Klaudimero heartbeat agent. Verify that the Klaudimero service is he
 Check that the API is responding: curl -s http://localhost:8585/
 Check that scheduled jobs are loaded: curl -s http://localhost:8585/jobs
 
-Only report if something is broken. If everything is fine, just say "OK".
+Only report if something is broken. If everything is fine, just say "OK" and do not send a push notification.
 """
 
 
