@@ -96,8 +96,8 @@ async def run_heartbeat() -> Execution:
         execution.finished_at = datetime.now(timezone.utc)
         save_execution(execution)
 
-        event = "completed" if execution.status == ExecutionStatus.completed else "failed"
-        await notify_heartbeat_event(execution, event)
+        if execution.status == ExecutionStatus.failed:
+            await notify_heartbeat_event(execution, "failed")
 
         return execution
 
