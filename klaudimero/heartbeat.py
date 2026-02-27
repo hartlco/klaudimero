@@ -112,9 +112,11 @@ async def run_heartbeat() -> Execution:
         save_execution(execution)
 
         # Only send push if failed or output has something to report
+        # Treat any output that is just "ok" (with optional punctuation/whitespace) as nothing to report
+        stripped = execution.output.strip().rstrip(".!").strip().upper()
         if execution.status == ExecutionStatus.failed:
             await notify_heartbeat_event(execution, "failed")
-        elif execution.output.strip().upper() != "OK":
+        elif stripped and stripped != "OK":
             await notify_heartbeat_event(execution, "completed")
 
         return execution
