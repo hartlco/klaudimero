@@ -18,7 +18,42 @@ A self-hosted cron service for [Claude Code](https://claude.ai/code). Schedules 
                                       └──────────────────────┘
 ```
 
-## Getting Started
+## Install as a Service (Linux)
+
+```bash
+git clone <repo-url> ~/code/klaudimero
+cd ~/code/klaudimero
+./install.sh
+```
+
+The install script creates a virtualenv, installs dependencies, and sets up a systemd service running on port 8585. Set `KLAUDIMERO_PORT` to use a different port:
+
+```bash
+KLAUDIMERO_PORT=9090 ./install.sh
+```
+
+### Managing the Service
+
+```bash
+# Start / stop / restart
+sudo systemctl start klaudimero
+sudo systemctl stop klaudimero
+sudo systemctl restart klaudimero
+
+# Check status
+sudo systemctl status klaudimero
+
+# Follow logs
+journalctl -u klaudimero -f
+
+# View recent logs
+journalctl -u klaudimero --since "1 hour ago"
+
+# Disable (won't start on boot)
+sudo systemctl disable klaudimero
+```
+
+### Running Manually
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
