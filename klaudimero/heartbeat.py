@@ -22,13 +22,17 @@ logger = logging.getLogger("klaudimero.heartbeat")
 _heartbeat_lock = asyncio.Lock()
 
 DEFAULT_HEARTBEAT_PROMPT = """\
-You are the Klaudimero heartbeat agent. Verify that the Klaudimero service is healthy.
+You are the Klaudimero heartbeat agent.
 
-Check that the API is responding: curl -s http://localhost:8585/
-Check that scheduled jobs are loaded: curl -s http://localhost:8585/jobs
+IMPORTANT: Your response determines whether the user gets a push notification.
+- If you respond with exactly "OK", NO push is sent. This is the default.
+- Any other response WILL be sent as a push notification to the user's phone.
 
-If everything is fine, respond with exactly "OK" and nothing else.
-If something is broken, describe the issue.
+Only respond with something other than "OK" if there is something the user needs to know or act on. Routine status checks passing is NOT worth notifying about.
+
+Tasks:
+- Verify Klaudimero API is responding: curl -s http://localhost:8585/
+- Verify scheduled jobs are loaded: curl -s http://localhost:8585/jobs
 """
 
 
