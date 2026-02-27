@@ -109,12 +109,12 @@ async def notify_heartbeat_event(execution: Execution, event: str) -> None:
     if not all([key_file, key_id, team_id, bundle_id]):
         return
 
-    if event == "completed":
-        title = "Heartbeat Completed"
-        body = f"Finished in {execution.duration_seconds or 0:.1f}s"
-    else:
+    if event == "failed":
         title = "Heartbeat Failed"
         body = f"Exit code: {execution.exit_code}"
+    else:
+        title = "Heartbeat"
+        body = execution.output.strip()[:200]
 
     try:
         with open(key_file) as f:
