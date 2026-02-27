@@ -52,8 +52,11 @@ async def notify_job_event(job: Job, execution: Execution, event: str) -> None:
     body = bodies.get(event, "")
 
     try:
+        with open(key_file) as f:
+            key_content = f.read()
+
         apns = APNs(
-            key=key_file,
+            key=key_content,
             key_id=key_id,
             team_id=team_id,
             topic=bundle_id,
