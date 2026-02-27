@@ -1,15 +1,26 @@
 import SwiftUI
 import MarkdownUI
 
+/// Outer shell: resolves the ChatViewModel from ChatStore and hands it to the
+/// inner view as an @ObservedObject so published-property changes trigger redraws.
 struct ChatDetailView: View {
     @EnvironmentObject var api: APIClient
+    @EnvironmentObject var chatStore: ChatStore
     let sessionId: String
 
-    @State private var session: ChatSession?
+    var body: some View {
+        ChatDetailContentView(
+            viewModel: chatStore.viewModel(for: sessionId, api: api)
+        )
+    }
+}
+
+/// Inner view that owns an @ObservedObject reference to the view model.
+/// Because ChatViewModel lives in ChatStore, it is NOT deallocated on navigation —
+/// isSending and session state persist and the loading indicator reappears on re-entry.
+private struct ChatDetailContentView: View {
+    @ObservedObject var viewModel: ChatViewModel
     @State private var messageText = ""
-    @State private var isSending = false
-    @State private var isLoading = false
-    @State private var error: String?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -17,22 +28,24 @@ struct ChatDetailView: View {
             Divider()
             inputBar
         }
-        .navigationTitle(session?.title.isEmpty == false ? session!.title : "New Chat")
+        .navigationTitle(viewModel.session?.title.isEmpty == false ? viewModel.session!.title : "New Chat")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await loadSession() }
+        .task {
+            await viewModel.loadSessionIfNeeded()
+        }
     }
 
     private var messageList: some View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
-                    if let session {
+                    if let session = viewModel.session {
                         ForEach(session.messages) { message in
                             messageBubble(message)
                                 .id(message.id)
                         }
                     }
-                    if isSending {
+                    if viewModel.isSending {
                         HStack {
                             ProgressView()
                                 .padding(.horizontal, 12)
@@ -44,10 +57,10 @@ struct ChatDetailView: View {
                 }
                 .padding()
             }
-            .onChange(of: session?.messages.count) { _, _ in
+            .onChange(of: viewModel.session?.messages.count) { _, _ in
                 scrollToBottom(proxy)
             }
-            .onChange(of: isSending) { _, _ in
+            .onChange(of: viewModel.isSending) { _, _ in
                 scrollToBottom(proxy)
             }
         }
@@ -55,9 +68,9 @@ struct ChatDetailView: View {
 
     private func scrollToBottom(_ proxy: ScrollViewProxy) {
         withAnimation {
-            if isSending {
+            if viewModel.isSending {
                 proxy.scrollTo("loading", anchor: .bottom)
-            } else if let lastMessage = session?.messages.last {
+            } else if let lastMessage = viewModel.session?.messages.last {
                 proxy.scrollTo(lastMessage.id, anchor: .bottom)
             }
         }
@@ -100,50 +113,16 @@ struct ChatDetailView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
 
             Button {
-                Task { await sendMessage() }
+                let content = messageText
+                messageText = ""
+                Task { await viewModel.sendMessage(content) }
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.title2)
             }
-            .disabled(messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSending)
+            .disabled(messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isSending)
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
-    }
-
-    private func loadSession() async {
-        isLoading = true
-        do {
-            session = try await api.getChatSession(sessionId)
-        } catch {
-            self.error = error.localizedDescription
-        }
-        isLoading = false
-    }
-
-    private func sendMessage() async {
-        let content = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !content.isEmpty else { return }
-
-        await MainActor.run { messageText = "" }
-        // Optimistically add user message
-        session?.messages.append(ChatMessage(role: "user", content: content))
-
-        isSending = true
-        do {
-            let response = try await api.sendChatMessage(sessionId: sessionId, content: content)
-            session?.messages.append(ChatMessage(role: "assistant", content: response))
-            // Update title if it was empty
-            if session?.title.isEmpty == true {
-                session?.title = String(content.prefix(50))
-            }
-        } catch {
-            self.error = error.localizedDescription
-            // Remove the optimistic user message on failure
-            if session?.messages.last?.role == "user" {
-                session?.messages.removeLast()
-            }
-        }
-        isSending = false
     }
 }

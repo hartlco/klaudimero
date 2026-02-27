@@ -25,6 +25,8 @@
 		A10000010000000000000010 /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* ChatSession.swift */; };
 		A10000010000000000000011 /* ChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* ChatListView.swift */; };
 		A10000010000000000000012 /* ChatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* ChatDetailView.swift */; };
+		A10000010000000000000013 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* ChatViewModel.swift */; };
+		A10000010000000000000014 /* ChatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* ChatStore.swift */; };
 		MD000001000000000000001A /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = MD000001000000000000001B /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +49,8 @@
 		A20000010000000000000010 /* ChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSession.swift; sourceTree = "<group>"; };
 		A20000010000000000000011 /* ChatListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListView.swift; sourceTree = "<group>"; };
 		A20000010000000000000012 /* ChatDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000013 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		A20000010000000000000014 /* ChatStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStore.swift; sourceTree = "<group>"; };
 		A30000010000000000000001 /* KlaudimeroApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KlaudimeroApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KlaudimeroApp.entitlements; sourceTree = "<group>"; };
 		C52510972F51802D00731DE3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -81,6 +85,7 @@
 				A40000010000000000000003 /* Models */,
 				A40000010000000000000004 /* Services */,
 				A40000010000000000000005 /* Views */,
+				A40000010000000000000007 /* ViewModels */,
 			);
 			path = KlaudimeroApp;
 			sourceTree = "<group>";
@@ -121,6 +126,15 @@
 				A20000010000000000000012 /* ChatDetailView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		A40000010000000000000007 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000013 /* ChatViewModel.swift */,
+				A20000010000000000000014 /* ChatStore.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000006 /* Products */ = {
@@ -207,6 +221,8 @@
 				A10000010000000000000010 /* ChatSession.swift in Sources */,
 				A10000010000000000000011 /* ChatListView.swift in Sources */,
 				A10000010000000000000012 /* ChatDetailView.swift in Sources */,
+				A10000010000000000000013 /* ChatViewModel.swift in Sources */,
+				A10000010000000000000014 /* ChatStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

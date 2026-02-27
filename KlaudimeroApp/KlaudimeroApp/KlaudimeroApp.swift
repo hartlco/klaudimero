@@ -9,6 +9,7 @@ class NavigationState: ObservableObject {
 struct KlaudimeroApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var navigationState = NavigationState.shared
+    @StateObject private var chatStore = ChatStore.shared
 
     var body: some Scene {
         WindowGroup {
@@ -28,6 +29,7 @@ struct KlaudimeroApp: App {
             }
             .environmentObject(APIClient.shared)
             .environmentObject(navigationState)
+            .environmentObject(chatStore)
             .sheet(item: $navigationState.pendingExecutionId) { executionId in
                 NavigationStack {
                     ExecutionLoadingView(executionId: executionId)

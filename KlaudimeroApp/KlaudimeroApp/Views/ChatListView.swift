@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChatListView: View {
     @EnvironmentObject var api: APIClient
+    @EnvironmentObject var chatStore: ChatStore
     @State private var sessions: [ChatSessionSummary] = []
     @State private var isLoading = false
     @State private var error: String?
@@ -81,6 +82,7 @@ struct ChatListView: View {
         Task {
             for session in toDelete {
                 try? await api.deleteChatSession(session.id)
+                chatStore.remove(sessionId: session.id)
             }
         }
     }
