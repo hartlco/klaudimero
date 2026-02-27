@@ -22,6 +22,9 @@
 		A1000001000000000000000D /* HeartbeatConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* HeartbeatConfig.swift */; };
 		A1000001000000000000000E /* HeartbeatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E /* HeartbeatView.swift */; };
 		A1000001000000000000000F /* HeartbeatPromptEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* HeartbeatPromptEditView.swift */; };
+		A10000010000000000000010 /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* ChatSession.swift */; };
+		A10000010000000000000011 /* ChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* ChatListView.swift */; };
+		A10000010000000000000012 /* ChatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* ChatDetailView.swift */; };
 		MD000001000000000000001A /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = MD000001000000000000001B /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +44,9 @@
 		A2000001000000000000000D /* HeartbeatConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartbeatConfig.swift; sourceTree = "<group>"; };
 		A2000001000000000000000E /* HeartbeatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartbeatView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000F /* HeartbeatPromptEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartbeatPromptEditView.swift; sourceTree = "<group>"; };
+		A20000010000000000000010 /* ChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSession.swift; sourceTree = "<group>"; };
+		A20000010000000000000011 /* ChatListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListView.swift; sourceTree = "<group>"; };
+		A20000010000000000000012 /* ChatDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailView.swift; sourceTree = "<group>"; };
 		A30000010000000000000001 /* KlaudimeroApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KlaudimeroApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KlaudimeroApp.entitlements; sourceTree = "<group>"; };
 		C52510972F51802D00731DE3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -85,6 +91,7 @@
 				A20000010000000000000002 /* Job.swift */,
 				A20000010000000000000003 /* Execution.swift */,
 				A2000001000000000000000D /* HeartbeatConfig.swift */,
+				A20000010000000000000010 /* ChatSession.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -110,6 +117,8 @@
 				A2000001000000000000000C /* ExecutionLoadingView.swift */,
 				A2000001000000000000000E /* HeartbeatView.swift */,
 				A2000001000000000000000F /* HeartbeatPromptEditView.swift */,
+				A20000010000000000000011 /* ChatListView.swift */,
+				A20000010000000000000012 /* ChatDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -195,6 +204,9 @@
 				A1000001000000000000000D /* HeartbeatConfig.swift in Sources */,
 				A1000001000000000000000E /* HeartbeatView.swift in Sources */,
 				A1000001000000000000000F /* HeartbeatPromptEditView.swift in Sources */,
+				A10000010000000000000010 /* ChatSession.swift in Sources */,
+				A10000010000000000000011 /* ChatListView.swift in Sources */,
+				A10000010000000000000012 /* ChatDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
