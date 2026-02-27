@@ -18,7 +18,12 @@ async def list_jobs() -> list[Job]:
 
 @router.post("", status_code=201)
 async def create_job(data: JobCreate) -> Job:
-    from ..scheduler import add_scheduled_job
+    from ..scheduler import add_scheduled_job, parse_schedule
+
+    try:
+        parse_schedule(data.schedule)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
 
     job = Job(**data.model_dump())
     save_job(job)
@@ -48,6 +53,14 @@ async def update_job(job_id: str, data: JobUpdate) -> Job:
         setattr(job, key, value)
     job.updated_at = datetime.now(timezone.utc)
     save_job(job)
+
+    # Validate schedule if changed
+    if "schedule" in updates:
+        from ..scheduler import parse_schedule
+        try:
+            parse_schedule(job.schedule)
+        except ValueError as e:
+            raise HTTPException(400, str(e))
 
     # Re-register with scheduler
     remove_scheduled_job(job.id)

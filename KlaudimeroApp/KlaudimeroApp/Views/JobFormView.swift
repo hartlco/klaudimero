@@ -33,7 +33,7 @@ struct JobFormView: View {
         Form {
             Section("Basics") {
                 TextField("Name", text: $name)
-                TextField("Schedule (cron or interval)", text: $schedule)
+                TextField("e.g. 0 7 * * *, every 30m, daily at 09:00", text: $schedule)
                     .autocapitalization(.none)
                 Toggle("Enabled", isOn: $enabled)
                 Stepper("Max Turns: \(maxTurns)", value: $maxTurns, in: 1...200)
