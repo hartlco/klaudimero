@@ -19,6 +19,7 @@
 		A1000001000000000000000A /* ExecutionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* ExecutionDetailView.swift */; };
 		A1000001000000000000000B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* SettingsView.swift */; };
 		A1000001000000000000000C /* ExecutionLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C /* ExecutionLoadingView.swift */; };
+		MD000001000000000000001A /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = MD000001000000000000001B /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,17 @@
 		C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KlaudimeroApp.entitlements; sourceTree = "<group>"; };
 		C52510972F51802D00731DE3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A60000010000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				MD000001000000000000001A /* MarkdownUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		A40000010000000000000001 = {
@@ -109,12 +121,16 @@
 			buildConfigurationList = A70000010000000000000003 /* Build configuration list for PBXNativeTarget "KlaudimeroApp" */;
 			buildPhases = (
 				A60000010000000000000001 /* Sources */,
+				A60000010000000000000002 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = KlaudimeroApp;
+			packageProductDependencies = (
+				MD000001000000000000001B /* MarkdownUI */,
+			);
 			productName = KlaudimeroApp;
 			productReference = A30000010000000000000001 /* KlaudimeroApp.app */;
 			productType = "com.apple.product-type.application";
@@ -138,6 +154,9 @@
 				Base,
 			);
 			mainGroup = A40000010000000000000001;
+			packageReferences = (
+				MD000001000000000000001C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+			);
 			productRefGroup = A40000010000000000000006 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -295,6 +314,26 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		MD000001000000000000001C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		MD000001000000000000001B /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = MD000001000000000000001C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 	};
 	rootObject = A80000010000000000000001 /* Project object */;
 }
