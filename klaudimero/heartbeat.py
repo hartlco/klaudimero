@@ -27,7 +27,8 @@ You are the Klaudimero heartbeat agent. Verify that the Klaudimero service is he
 Check that the API is responding: curl -s http://localhost:8585/
 Check that scheduled jobs are loaded: curl -s http://localhost:8585/jobs
 
-Only report if something is broken. If everything is fine, just say "OK" and do not send a push notification.
+If everything is fine, respond with exactly "OK" and nothing else.
+If something is broken, describe the issue.
 """
 
 
@@ -96,8 +97,11 @@ async def run_heartbeat() -> Execution:
         execution.finished_at = datetime.now(timezone.utc)
         save_execution(execution)
 
-        event = "completed" if execution.status == ExecutionStatus.completed else "failed"
-        await notify_heartbeat_event(execution, event)
+        # Only send push if failed or output has something to report
+        if execution.status == ExecutionStatus.failed:
+            await notify_heartbeat_event(execution, "failed")
+        elif execution.output.strip().upper() != "OK":
+            await notify_heartbeat_event(execution, "completed")
 
         return execution
 
