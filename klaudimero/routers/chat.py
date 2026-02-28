@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import asyncio
-import os
 import uuid
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
 
-from ..config import UPLOADS_DIR
+from ..config import UPLOADS_DIR, WORKSPACE_DIR
 from ..models import ChatSession, ChatMessage, ChatRequest
 from ..storage import (
     save_chat_session,
@@ -116,7 +115,7 @@ async def send_message(session_id: str, data: ChatRequest) -> dict:
     try:
         proc = await asyncio.create_subprocess_exec(
             *cmd,
-            cwd=os.path.expanduser("~"),
+            cwd=str(WORKSPACE_DIR),
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
         )

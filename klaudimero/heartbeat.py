@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import os
 import time
 from datetime import datetime, timezone
 
 from apscheduler.triggers.interval import IntervalTrigger
 
-from .config import HEARTBEAT_JOB_ID
+from .config import HEARTBEAT_JOB_ID, WORKSPACE_DIR
 from .models import ChatMessage, ChatSession, Execution, ExecutionStatus, HeartbeatConfig
 from .storage import (
     cleanup_old_executions,
@@ -91,7 +90,7 @@ async def run_heartbeat() -> Execution:
 
             proc = await asyncio.create_subprocess_exec(
                 *cmd,
-                cwd=os.path.expanduser("~"),
+                cwd=str(WORKSPACE_DIR),
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.STDOUT,
             )

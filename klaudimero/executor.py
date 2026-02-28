@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-import os
 import time
 from datetime import datetime, timezone
 
+from .config import WORKSPACE_DIR
 from .models import ChatMessage, ChatSession, Execution, ExecutionStatus, Job
 from .storage import load_chat_session, save_chat_session, save_execution, save_job
 
@@ -36,7 +36,7 @@ async def run_job(job: Job) -> Execution:
 
         proc = await asyncio.create_subprocess_exec(
             *cmd,
-            cwd=os.path.expanduser("~"),
+            cwd=str(WORKSPACE_DIR),
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
         )

@@ -13,12 +13,15 @@ HEARTBEAT_PROMPT_FILE = BASE_DIR / "HEARTBEAT.md"
 HEARTBEAT_JOB_ID = "__heartbeat__"
 CHAT_SESSIONS_DIR = BASE_DIR / "chat_sessions"
 UPLOADS_DIR = BASE_DIR / "uploads"
+WORKSPACE_DIR = BASE_DIR / "workspace"
+WORKSPACE_CLAUDE_MD = WORKSPACE_DIR / "CLAUDE.md"
 
 # Ensure directories exist
 JOBS_DIR.mkdir(parents=True, exist_ok=True)
 EXECUTIONS_DIR.mkdir(parents=True, exist_ok=True)
 CHAT_SESSIONS_DIR.mkdir(parents=True, exist_ok=True)
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_apns_config() -> dict | None:

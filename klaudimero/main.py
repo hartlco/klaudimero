@@ -4,7 +4,7 @@ import logging
 from fastapi import FastAPI
 
 from .scheduler import get_scheduler, load_and_schedule_all_jobs
-from .routers import jobs, executions, devices, heartbeat, chat
+from .routers import jobs, executions, devices, heartbeat, chat, soul
 
 logging.basicConfig(
     level=logging.INFO,
@@ -15,12 +15,14 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from .heartbeat import ensure_heartbeat_prompt, schedule_heartbeat
+    from .soul import ensure_soul_prompt
     from .storage import load_heartbeat_config
 
     scheduler = get_scheduler()
     load_and_schedule_all_jobs()
 
-    # Heartbeat setup
+    # Soul + Heartbeat setup
+    ensure_soul_prompt()
     ensure_heartbeat_prompt()
     hb_config = load_heartbeat_config()
     if hb_config.enabled:
@@ -40,6 +42,7 @@ app.include_router(executions.router)
 app.include_router(devices.router)
 app.include_router(heartbeat.router)
 app.include_router(chat.router)
+app.include_router(soul.router)
 
 
 @app.get("/")
