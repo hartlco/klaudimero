@@ -26,6 +26,7 @@ struct SettingsView: View {
                     api.baseURL = serverURL
                     dismiss()
                 }
+                .keyboardShortcut("s", modifiers: .command)
             }
         }
         .onAppear {

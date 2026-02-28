@@ -47,6 +47,16 @@ struct KlaudimeroApp: App {
                 }
             }
         }
+        .commands {
+            CommandMenu("Navigation") {
+                Button("Chat") { navigationState.selectedTab = 0 }
+                    .keyboardShortcut("1", modifiers: .command)
+                Button("Jobs") { navigationState.selectedTab = 1 }
+                    .keyboardShortcut("2", modifiers: .command)
+                Button("Heartbeat") { navigationState.selectedTab = 2 }
+                    .keyboardShortcut("3", modifiers: .command)
+            }
+        }
     }
 }
 

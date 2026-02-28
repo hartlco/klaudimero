@@ -277,6 +277,16 @@ private struct ChatDetailContentView: View {
     }
     #endif
 
+    private func sendMessage() {
+        let content = messageText
+        let images = selectedImageData
+        isInputFocused = false
+        messageText = ""
+        selectedImageData = []
+        selectedPhotos = []
+        Task { await viewModel.sendMessage(content, imageDataItems: images) }
+    }
+
     private var inputBar: some View {
         HStack(spacing: 8) {
             Menu {
@@ -308,17 +318,12 @@ private struct ChatDetailContentView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
 
             Button {
-                let content = messageText
-                let images = selectedImageData
-                isInputFocused = false
-                messageText = ""
-                selectedImageData = []
-                selectedPhotos = []
-                Task { await viewModel.sendMessage(content, imageDataItems: images) }
+                sendMessage()
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.title2)
             }
+            .keyboardShortcut(.return, modifiers: .command)
             .disabled(messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isSending)
         }
         .padding(.horizontal)

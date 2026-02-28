@@ -19,6 +19,7 @@ struct HeartbeatPromptEditView: View {
                         onSave(prompt)
                         dismiss()
                     }
+                    .keyboardShortcut("s", modifiers: .command)
                 }
             }
     }

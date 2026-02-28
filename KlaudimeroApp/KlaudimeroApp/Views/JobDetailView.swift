@@ -60,6 +60,7 @@ struct JobDetailView: View {
         .navigationTitle(job.name)
         .toolbar {
             Button("Edit") { showingEdit = true }
+                .keyboardShortcut("e", modifiers: .command)
         }
         .refreshable { await loadExecutions() }
         .task { await loadExecutions() }

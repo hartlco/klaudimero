@@ -42,11 +42,13 @@ struct JobListView: View {
                     Button { showingSettings = true } label: {
                         Image(systemName: "gear")
                     }
+                    .keyboardShortcut(",", modifiers: .command)
                 }
                 ToolbarItem(placement: .automatic) {
                     Button { showingCreate = true } label: {
                         Image(systemName: "plus")
                     }
+                    .keyboardShortcut("n", modifiers: .command)
                 }
             }
             .refreshable { await loadJobs() }

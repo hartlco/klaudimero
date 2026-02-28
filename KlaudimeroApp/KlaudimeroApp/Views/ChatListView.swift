@@ -41,6 +41,7 @@ struct ChatListView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .keyboardShortcut("n", modifiers: .command)
                 }
             }
             .refreshable { await loadSessions() }

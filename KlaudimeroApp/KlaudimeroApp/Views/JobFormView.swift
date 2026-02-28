@@ -63,6 +63,7 @@ struct JobFormView: View {
                 Button("Save") {
                     Task { await save() }
                 }
+                .keyboardShortcut("s", modifiers: .command)
                 .disabled(name.isEmpty || prompt.isEmpty || schedule.isEmpty || isSaving)
             }
         }
