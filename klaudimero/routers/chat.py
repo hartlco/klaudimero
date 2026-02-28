@@ -110,6 +110,7 @@ async def send_message(session_id: str, data: ChatRequest) -> dict:
         full_prompt,
         "--output-format", "text",
         "--max-turns", str(data.max_turns),
+        "--dangerously-skip-permissions",
     ]
 
     try:
