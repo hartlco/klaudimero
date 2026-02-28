@@ -27,6 +27,7 @@ private struct ChatDetailContentView: View {
     @State private var selectedImageData: [(Data, String)] = []
     @State private var showCamera = false
     @State private var showPhotosPicker = false
+    @FocusState private var isInputFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
@@ -249,6 +250,7 @@ private struct ChatDetailContentView: View {
             }
 
             TextField("Message", text: $messageText, axis: .vertical)
+                .focused($isInputFocused)
                 .textFieldStyle(.plain)
                 .lineLimit(1...5)
                 .padding(.horizontal, 12)
@@ -259,6 +261,7 @@ private struct ChatDetailContentView: View {
             Button {
                 let content = messageText
                 let images = selectedImageData
+                isInputFocused = false
                 messageText = ""
                 selectedImageData = []
                 selectedPhotos = []
