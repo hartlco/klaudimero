@@ -30,16 +30,30 @@ class ChatViewModel: ObservableObject {
         isLoading = false
     }
 
-    func sendMessage(_ content: String) async {
+    func sendMessage(_ content: String, imageDataItems: [(Data, String)] = []) async {
         let trimmed = content.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !isSending else { return }
 
-        // Optimistically add user message
-        session?.messages.append(ChatMessage(role: "user", content: trimmed))
-
         isSending = true
+
+        // Upload images first
+        var imagePaths: [String] = []
+        for (data, filename) in imageDataItems {
+            do {
+                let result = try await api.uploadImage(sessionId: sessionId, imageData: data, filename: filename)
+                imagePaths.append(result.filePath)
+            } catch {
+                self.error = error.localizedDescription
+                isSending = false
+                return
+            }
+        }
+
+        // Optimistically add user message
+        session?.messages.append(ChatMessage(role: "user", content: trimmed, images: imagePaths))
+
         do {
-            let response = try await api.sendChatMessage(sessionId: sessionId, content: trimmed)
+            let response = try await api.sendChatMessage(sessionId: sessionId, content: trimmed, images: imagePaths)
             session?.messages.append(ChatMessage(role: "assistant", content: response))
             // Update title from first user message if still empty
             if session?.title.isEmpty == true {

@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import asyncio
 import os
+import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi.responses import FileResponse
 
+from ..config import UPLOADS_DIR
 from ..models import ChatSession, ChatMessage, ChatRequest
 from ..storage import (
     save_chat_session,
@@ -52,6 +55,28 @@ async def delete_session(session_id: str) -> None:
         raise HTTPException(404, "Session not found")
 
 
+@router.post("/sessions/{session_id}/upload")
+async def upload_image(session_id: str, file: UploadFile = File(...)) -> dict:
+    session = load_chat_session(session_id)
+    if not session:
+        raise HTTPException(404, "Session not found")
+
+    filename = f"{uuid.uuid4()}_{file.filename}"
+    file_path = UPLOADS_DIR / filename
+    content = await file.read()
+    file_path.write_bytes(content)
+
+    return {"file_path": str(file_path), "filename": file.filename}
+
+
+@router.get("/uploads/{filename}")
+async def serve_upload(filename: str) -> FileResponse:
+    file_path = UPLOADS_DIR / filename
+    if not file_path.exists():
+        raise HTTPException(404, "File not found")
+    return FileResponse(file_path)
+
+
 @router.post("/sessions/{session_id}/message")
 async def send_message(session_id: str, data: ChatRequest) -> dict:
     session = load_chat_session(session_id)
@@ -59,7 +84,7 @@ async def send_message(session_id: str, data: ChatRequest) -> dict:
         raise HTTPException(404, "Session not found")
 
     # Append user message
-    session.messages.append(ChatMessage(role="user", content=data.content))
+    session.messages.append(ChatMessage(role="user", content=data.content, images=data.images))
 
     # Auto-set title from first user message
     if not session.title:
@@ -69,7 +94,10 @@ async def send_message(session_id: str, data: ChatRequest) -> dict:
     prompt_parts = []
     for msg in session.messages:
         if msg.role == "user":
-            prompt_parts.append(f"User: {msg.content}")
+            text = msg.content
+            for img_path in msg.images:
+                text += f"\n[Attached image: {img_path} — read this file to see the image]"
+            prompt_parts.append(f"User: {text}")
         else:
             prompt_parts.append(f"Assistant: {msg.content}")
     prompt_parts.append("Assistant:")

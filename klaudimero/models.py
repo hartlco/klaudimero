@@ -112,11 +112,13 @@ class Device(BaseModel):
 class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
     content: str
+    images: list[str] = []
 
 
 class ChatRequest(BaseModel):
     content: str
     max_turns: int = 50
+    images: list[str] = []
 
 
 class ChatSession(BaseModel):

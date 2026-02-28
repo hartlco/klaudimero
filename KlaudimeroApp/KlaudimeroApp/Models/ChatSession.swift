@@ -35,15 +35,17 @@ struct ChatMessage: Codable, Identifiable {
     let id: UUID
     let role: String
     let content: String
+    var images: [String]
 
     enum CodingKeys: String, CodingKey {
-        case role, content
+        case role, content, images
     }
 
-    init(role: String, content: String) {
+    init(role: String, content: String, images: [String] = []) {
         self.id = UUID()
         self.role = role
         self.content = content
+        self.images = images
     }
 
     init(from decoder: Decoder) throws {
@@ -51,6 +53,17 @@ struct ChatMessage: Codable, Identifiable {
         self.id = UUID()
         self.role = try container.decode(String.self, forKey: .role)
         self.content = try container.decode(String.self, forKey: .content)
+        self.images = (try? container.decode([String].self, forKey: .images)) ?? []
+    }
+}
+
+struct UploadResponse: Codable {
+    let filePath: String
+    let filename: String
+
+    enum CodingKeys: String, CodingKey {
+        case filePath = "file_path"
+        case filename
     }
 }
 

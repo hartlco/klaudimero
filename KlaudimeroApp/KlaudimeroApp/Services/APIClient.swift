@@ -149,13 +149,40 @@ class APIClient: ObservableObject {
         try await requestVoid("DELETE", "/chat/sessions/\(id)")
     }
 
-    func sendChatMessage(sessionId: String, content: String, maxTurns: Int = 50) async throws -> String {
+    func sendChatMessage(sessionId: String, content: String, images: [String] = [], maxTurns: Int = 50) async throws -> String {
         struct Body: Codable {
             let content: String
             let max_turns: Int
+            let images: [String]
         }
-        let resp: ChatResponse = try await request("POST", "/chat/sessions/\(sessionId)/message", body: Body(content: content, max_turns: maxTurns))
+        let resp: ChatResponse = try await request("POST", "/chat/sessions/\(sessionId)/message", body: Body(content: content, max_turns: maxTurns, images: images))
         return resp.response
+    }
+
+    func uploadImage(sessionId: String, imageData: Data, filename: String) async throws -> UploadResponse {
+        let boundary = UUID().uuidString
+        var req = URLRequest(url: url("/chat/sessions/\(sessionId)/upload"))
+        req.httpMethod = "POST"
+        req.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        var body = Data()
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+        body.append(imageData)
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        req.httpBody = body
+
+        let (data, response) = try await URLSession.shared.data(for: req)
+        guard let http = response as? HTTPURLResponse, 200..<300 ~= http.statusCode else {
+            let http = response as? HTTPURLResponse
+            throw APIError.httpError(http?.statusCode ?? 0, String(data: data, encoding: .utf8) ?? "")
+        }
+        return try decoder.decode(UploadResponse.self, from: data)
+    }
+
+    func uploadImageURL(filename: String) -> URL {
+        url("/chat/uploads/\(filename)")
     }
 
     // MARK: - Devices
