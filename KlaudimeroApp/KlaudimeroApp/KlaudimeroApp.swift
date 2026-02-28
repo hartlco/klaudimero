@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 class NavigationState: ObservableObject {
     static let shared = NavigationState()
