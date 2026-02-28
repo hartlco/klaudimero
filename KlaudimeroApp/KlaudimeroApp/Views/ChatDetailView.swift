@@ -25,6 +25,8 @@ private struct ChatDetailContentView: View {
     @State private var messageText = ""
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedImageData: [(Data, String)] = []
+    @State private var showCamera = false
+    @State private var showPhotosPicker = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -43,15 +45,23 @@ private struct ChatDetailContentView: View {
         }
         .onChange(of: selectedPhotos) { _, newItems in
             Task {
-                var results: [(Data, String)] = []
                 for (index, item) in newItems.enumerated() {
                     if let data = try? await item.loadTransferable(type: Data.self),
                        let resized = Self.resizeImageData(data, maxDimension: 1500) {
-                        results.append((resized, "image_\(index).jpg"))
+                        selectedImageData.append((resized, "image_\(selectedImageData.count + index).jpg"))
                     }
                 }
-                selectedImageData = results
+                selectedPhotos = []
             }
+        }
+        .photosPicker(isPresented: $showPhotosPicker, selection: $selectedPhotos, maxSelectionCount: 4, matching: .images)
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPicker { image in
+                if let resized = Self.resizeImageData(image, maxDimension: 1500) {
+                    selectedImageData.append((resized, "photo_\(selectedImageData.count).jpg"))
+                }
+            }
+            .ignoresSafeArea()
         }
     }
 
@@ -202,6 +212,10 @@ private struct ChatDetailContentView: View {
 
     private static func resizeImageData(_ data: Data, maxDimension: CGFloat) -> Data? {
         guard let image = UIImage(data: data) else { return nil }
+        return resizeImageData(image, maxDimension: maxDimension)
+    }
+
+    private static func resizeImageData(_ image: UIImage, maxDimension: CGFloat) -> Data? {
         let size = image.size
         guard size.width > maxDimension || size.height > maxDimension else {
             return image.jpegData(compressionQuality: 0.8)
@@ -217,9 +231,20 @@ private struct ChatDetailContentView: View {
 
     private var inputBar: some View {
         HStack(spacing: 8) {
-            PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 4, matching: .images) {
-                Image(systemName: "photo.on.rectangle.angled")
-                    .font(.title3)
+            Menu {
+                Button {
+                    showCamera = true
+                } label: {
+                    Label("Take Photo", systemImage: "camera")
+                }
+                Button {
+                    showPhotosPicker = true
+                } label: {
+                    Label("Photo Library", systemImage: "photo.on.rectangle.angled")
+                }
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .font(.title2)
                     .foregroundStyle(.secondary)
             }
 
@@ -246,5 +271,44 @@ private struct ChatDetailContentView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
+    }
+}
+
+private struct CameraPicker: UIViewControllerRepresentable {
+    @Environment(\.dismiss) private var dismiss
+    let onCapture: (UIImage) -> Void
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(dismiss: dismiss, onCapture: onCapture)
+    }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let dismiss: DismissAction
+        let onCapture: (UIImage) -> Void
+
+        init(dismiss: DismissAction, onCapture: @escaping (UIImage) -> Void) {
+            self.dismiss = dismiss
+            self.onCapture = onCapture
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            if let image = info[.originalImage] as? UIImage {
+                onCapture(image)
+            }
+            dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            dismiss()
+        }
     }
 }
