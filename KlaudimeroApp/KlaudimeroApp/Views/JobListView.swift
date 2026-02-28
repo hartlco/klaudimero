@@ -38,12 +38,12 @@ struct JobListView: View {
             }
             .navigationTitle("Klaudimero")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .automatic) {
                     Button { showingSettings = true } label: {
                         Image(systemName: "gear")
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .automatic) {
                     Button { showingCreate = true } label: {
                         Image(systemName: "plus")
                     }

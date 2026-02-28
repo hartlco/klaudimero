@@ -35,7 +35,7 @@ struct ChatListView: View {
             }
             .navigationTitle("Chat")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .automatic) {
                     Button {
                         Task { await createSession() }
                     } label: {
