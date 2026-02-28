@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,7 @@
 		A10000010000000000000012 /* ChatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* ChatDetailView.swift */; };
 		A10000010000000000000013 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* ChatViewModel.swift */; };
 		A10000010000000000000014 /* ChatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* ChatStore.swift */; };
+		C52B4B922F52C43100DA5655 /* Kalimero-icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = C52B4B8F2F52C38500DA5655 /* Kalimero-icon.icon */; };
 		MD000001000000000000001A /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = MD000001000000000000001B /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
@@ -54,16 +55,15 @@
 		A30000010000000000000001 /* KlaudimeroApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KlaudimeroApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KlaudimeroApp.entitlements; sourceTree = "<group>"; };
 		C52510972F51802D00731DE3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C52B4B8F2F52C38500DA5655 /* Kalimero-icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Kalimero-icon.icon"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A60000010000000000000002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				MD000001000000000000001A /* MarkdownUI in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -79,6 +79,7 @@
 		A40000010000000000000002 /* KlaudimeroApp */ = {
 			isa = PBXGroup;
 			children = (
+				C52B4B8F2F52C38500DA5655 /* Kalimero-icon.icon */,
 				C52510972F51802D00731DE3 /* Info.plist */,
 				C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */,
 				A20000010000000000000001 /* KlaudimeroApp.swift */,
@@ -128,6 +129,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		A40000010000000000000006 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000010000000000000001 /* KlaudimeroApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		A40000010000000000000007 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,14 +144,6 @@
 				A20000010000000000000014 /* ChatStore.swift */,
 			);
 			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		A40000010000000000000006 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A30000010000000000000001 /* KlaudimeroApp.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,10 +155,9 @@
 			buildPhases = (
 				A60000010000000000000001 /* Sources */,
 				A60000010000000000000002 /* Frameworks */,
+				C52B4B912F52C42A00DA5655 /* Resources */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			name = KlaudimeroApp;
 			packageProductDependencies = (
@@ -175,10 +175,9 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2630;
 			};
 			buildConfigurationList = A70000010000000000000001 /* Build configuration list for PBXProject "KlaudimeroApp" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -189,6 +188,7 @@
 			packageReferences = (
 				MD000001000000000000001C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
+			preferredProjectObjectVersion = 90;
 			productRefGroup = A40000010000000000000006 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -198,10 +198,18 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		C52B4B912F52C42A00DA5655 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				C52B4B922F52C43100DA5655 /* Kalimero-icon.icon in Resources */,
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A60000010000000000000001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				A10000010000000000000001 /* KlaudimeroApp.swift in Sources */,
 				A10000010000000000000002 /* Job.swift in Sources */,
@@ -224,53 +232,110 @@
 				A10000010000000000000013 /* ChatViewModel.swift in Sources */,
 				A10000010000000000000014 /* ChatStore.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		A90000010000000000000001 /* Debug */ = {
+		A90000010000000000000001 /* Debug configuration for PBXProject "KlaudimeroApp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9E8SXF3Y36;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		A90000010000000000000002 /* Release */ = {
+		A90000010000000000000002 /* Release configuration for PBXProject "KlaudimeroApp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9E8SXF3Y36;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -278,14 +343,14 @@
 			};
 			name = Release;
 		};
-		A9000001000000000000000A /* Debug */ = {
+		A9000001000000000000000A /* Debug configuration for PBXNativeTarget "KlaudimeroApp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Kalimero-icon";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = KlaudimeroApp/KlaudimeroApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9E8SXF3Y36;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KlaudimeroApp/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
@@ -293,6 +358,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,14 +371,14 @@
 			};
 			name = Debug;
 		};
-		A9000001000000000000000B /* Release */ = {
+		A9000001000000000000000B /* Release configuration for PBXNativeTarget "KlaudimeroApp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Kalimero-icon";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = KlaudimeroApp/KlaudimeroApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9E8SXF3Y36;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KlaudimeroApp/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
@@ -320,6 +386,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -338,19 +405,17 @@
 		A70000010000000000000001 /* Build configuration list for PBXProject "KlaudimeroApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A90000010000000000000001 /* Debug */,
-				A90000010000000000000002 /* Release */,
+				A90000010000000000000001 /* Debug configuration for PBXProject "KlaudimeroApp" */,
+				A90000010000000000000002 /* Release configuration for PBXProject "KlaudimeroApp" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		A70000010000000000000003 /* Build configuration list for PBXNativeTarget "KlaudimeroApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A9000001000000000000000A /* Debug */,
-				A9000001000000000000000B /* Release */,
+				A9000001000000000000000A /* Debug configuration for PBXNativeTarget "KlaudimeroApp" */,
+				A9000001000000000000000B /* Release configuration for PBXNativeTarget "KlaudimeroApp" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
@@ -373,7 +438,6 @@
 			productName = MarkdownUI;
 		};
 /* End XCSwiftPackageProductDependency section */
-
 	};
 	rootObject = A80000010000000000000001 /* Project object */;
 }
