@@ -1,11 +1,19 @@
 import SwiftUI
 import UserNotifications
 
+enum MenuAction: Equatable {
+    case newChat
+    case newJob
+    case openSettings
+    case refresh
+}
+
 class NavigationState: ObservableObject {
     static let shared = NavigationState()
     @Published var pendingExecutionId: String?
     @Published var pendingSessionId: String?
     @Published var selectedTab: Int = 0
+    @Published var pendingMenuAction: MenuAction?
 }
 
 @main
@@ -48,6 +56,28 @@ struct KlaudimeroApp: App {
             }
         }
         .commands {
+            CommandGroup(replacing: .newItem) {
+                Button("New Chat") {
+                    navigationState.selectedTab = 0
+                    navigationState.pendingMenuAction = .newChat
+                }
+                .keyboardShortcut("n", modifiers: .command)
+
+                Button("New Job") {
+                    navigationState.selectedTab = 1
+                    navigationState.pendingMenuAction = .newJob
+                }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
+
+                Divider()
+
+                Button("Settings...") {
+                    navigationState.selectedTab = 1
+                    navigationState.pendingMenuAction = .openSettings
+                }
+                .keyboardShortcut(",", modifiers: .command)
+            }
+
             CommandMenu("Navigation") {
                 Button("Chat") { navigationState.selectedTab = 0 }
                     .keyboardShortcut("1", modifiers: .command)
@@ -55,6 +85,13 @@ struct KlaudimeroApp: App {
                     .keyboardShortcut("2", modifiers: .command)
                 Button("Heartbeat") { navigationState.selectedTab = 2 }
                     .keyboardShortcut("3", modifiers: .command)
+            }
+
+            CommandGroup(replacing: .toolbar) {
+                Button("Refresh") {
+                    navigationState.pendingMenuAction = .refresh
+                }
+                .keyboardShortcut("r", modifiers: .command)
             }
         }
     }

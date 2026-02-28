@@ -1,7 +1,14 @@
 import SwiftUI
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 struct HeartbeatView: View {
     @EnvironmentObject var api: APIClient
+    @EnvironmentObject var navigationState: NavigationState
     @State private var status: HeartbeatStatus?
     @State private var executions: [Execution] = []
     @State private var isLoading = false
@@ -29,6 +36,16 @@ struct HeartbeatView: View {
                 }
                 if let error, status == nil {
                     ContentUnavailableView("Error", systemImage: "exclamationmark.triangle", description: Text(error))
+                }
+            }
+            .onChange(of: navigationState.pendingMenuAction) { _, action in
+                guard navigationState.selectedTab == 2 else { return }
+                switch action {
+                case .refresh:
+                    navigationState.pendingMenuAction = nil
+                    Task { await load() }
+                default:
+                    break
                 }
             }
         }
@@ -118,9 +135,25 @@ struct HeartbeatView: View {
                             }
                         }
                     }
+                    .contextMenu {
+                        Button {
+                            copyToClipboard(execution.output)
+                        } label: {
+                            Label("Copy Output", systemImage: "doc.on.doc")
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private func copyToClipboard(_ text: String) {
+        #if os(iOS)
+        UIPasteboard.general.string = text
+        #elseif os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #endif
     }
 
     private func load() async {

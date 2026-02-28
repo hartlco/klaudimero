@@ -1,5 +1,11 @@
 import SwiftUI
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 struct ChatListView: View {
     @EnvironmentObject var api: APIClient
     @EnvironmentObject var chatStore: ChatStore
@@ -30,6 +36,19 @@ struct ChatListView: View {
                         }
                         .padding(.vertical, 4)
                     }
+                    .contextMenu {
+                        Button {
+                            copyToClipboard(session.title.isEmpty ? "New Chat" : session.title)
+                        } label: {
+                            Label("Copy Title", systemImage: "doc.on.doc")
+                        }
+                        Divider()
+                        Button(role: .destructive) {
+                            deleteSession(session)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
                 .onDelete(perform: deleteSessions)
             }
@@ -41,7 +60,6 @@ struct ChatListView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .keyboardShortcut("n", modifiers: .command)
                 }
             }
             .refreshable { await loadSessions() }
@@ -70,6 +88,19 @@ struct ChatListView: View {
                 if let sessionId {
                     navigateToSessionId = sessionId
                     navigationState.pendingSessionId = nil
+                }
+            }
+            .onChange(of: navigationState.pendingMenuAction) { _, action in
+                guard navigationState.selectedTab == 0 else { return }
+                switch action {
+                case .newChat:
+                    navigationState.pendingMenuAction = nil
+                    Task { await createSession() }
+                case .refresh:
+                    navigationState.pendingMenuAction = nil
+                    Task { await loadSessions() }
+                default:
+                    break
                 }
             }
         }
@@ -121,5 +152,22 @@ struct ChatListView: View {
                 chatStore.remove(sessionId: session.id)
             }
         }
+    }
+
+    private func deleteSession(_ session: ChatSessionSummary) {
+        sessions.removeAll { $0.id == session.id }
+        Task {
+            try? await api.deleteChatSession(session.id)
+            chatStore.remove(sessionId: session.id)
+        }
+    }
+
+    private func copyToClipboard(_ text: String) {
+        #if os(iOS)
+        UIPasteboard.general.string = text
+        #elseif os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #endif
     }
 }

@@ -160,9 +160,25 @@ private struct ChatDetailContentView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .contextMenu {
+                Button {
+                    copyToClipboard(message.content)
+                } label: {
+                    Label("Copy Message", systemImage: "doc.on.doc")
+                }
+            }
 
             if message.role == "assistant" { Spacer(minLength: 40) }
         }
+    }
+
+    private func copyToClipboard(_ text: String) {
+        #if os(iOS)
+        UIPasteboard.general.string = text
+        #elseif os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #endif
     }
 
     private func imageGrid(for message: ChatMessage) -> some View {

@@ -1,7 +1,14 @@
 import SwiftUI
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 struct JobListView: View {
     @EnvironmentObject var api: APIClient
+    @EnvironmentObject var navigationState: NavigationState
     @State private var jobs: [Job] = []
     @State private var isLoading = false
     @State private var error: String?
@@ -33,6 +40,38 @@ struct JobListView: View {
                         }
                         .padding(.vertical, 4)
                     }
+                    .contextMenu {
+                        Button {
+                            Task {
+                                try? await api.triggerJob(job.id)
+                            }
+                        } label: {
+                            Label("Trigger Now", systemImage: "play.fill")
+                        }
+                        Button {
+                            Task {
+                                let update = JobUpdate(enabled: !job.enabled)
+                                if let updated = try? await api.updateJob(job.id, update) {
+                                    if let index = jobs.firstIndex(where: { $0.id == updated.id }) {
+                                        jobs[index] = updated
+                                    }
+                                }
+                            }
+                        } label: {
+                            Label(job.enabled ? "Disable" : "Enable", systemImage: job.enabled ? "pause.circle" : "play.circle")
+                        }
+                        Button {
+                            copyToClipboard(job.prompt)
+                        } label: {
+                            Label("Copy Prompt", systemImage: "doc.on.doc")
+                        }
+                        Divider()
+                        Button(role: .destructive) {
+                            deleteJob(job)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
                 .onDelete(perform: deleteJobs)
             }
@@ -42,13 +81,11 @@ struct JobListView: View {
                     Button { showingSettings = true } label: {
                         Image(systemName: "gear")
                     }
-                    .keyboardShortcut(",", modifiers: .command)
                 }
                 ToolbarItem(placement: .automatic) {
                     Button { showingCreate = true } label: {
                         Image(systemName: "plus")
                     }
-                    .keyboardShortcut("n", modifiers: .command)
                 }
             }
             .refreshable { await loadJobs() }
@@ -73,6 +110,22 @@ struct JobListView: View {
                     SettingsView()
                 }
             }
+            .onChange(of: navigationState.pendingMenuAction) { _, action in
+                guard navigationState.selectedTab == 1 else { return }
+                switch action {
+                case .newJob:
+                    navigationState.pendingMenuAction = nil
+                    showingCreate = true
+                case .openSettings:
+                    navigationState.pendingMenuAction = nil
+                    showingSettings = true
+                case .refresh:
+                    navigationState.pendingMenuAction = nil
+                    Task { await loadJobs() }
+                default:
+                    break
+                }
+            }
         }
     }
 
@@ -95,5 +148,21 @@ struct JobListView: View {
                 try? await api.deleteJob(job.id)
             }
         }
+    }
+
+    private func deleteJob(_ job: Job) {
+        jobs.removeAll { $0.id == job.id }
+        Task {
+            try? await api.deleteJob(job.id)
+        }
+    }
+
+    private func copyToClipboard(_ text: String) {
+        #if os(iOS)
+        UIPasteboard.general.string = text
+        #elseif os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #endif
     }
 }

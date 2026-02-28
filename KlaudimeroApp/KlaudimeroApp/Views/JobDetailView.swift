@@ -1,5 +1,11 @@
 import SwiftUI
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 struct JobDetailView: View {
     @EnvironmentObject var api: APIClient
     @State var job: Job
@@ -53,6 +59,13 @@ struct JobDetailView: View {
                                 }
                             }
                         }
+                        .contextMenu {
+                            Button {
+                                copyToClipboard(execution.output)
+                            } label: {
+                                Label("Copy Output", systemImage: "doc.on.doc")
+                            }
+                        }
                     }
                 }
             }
@@ -79,6 +92,15 @@ struct JobDetailView: View {
         } catch {
             print("Failed to load executions: \(error)")
         }
+    }
+
+    private func copyToClipboard(_ text: String) {
+        #if os(iOS)
+        UIPasteboard.general.string = text
+        #elseif os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #endif
     }
 
     private func triggerJob() async {
