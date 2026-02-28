@@ -59,6 +59,12 @@ struct ChatListView: View {
             .navigationDestination(item: $navigateToSessionId) { sessionId in
                 ChatDetailView(sessionId: sessionId)
             }
+            .onAppear {
+                if let sessionId = navigationState.pendingSessionId {
+                    navigateToSessionId = sessionId
+                    navigationState.pendingSessionId = nil
+                }
+            }
             .onChange(of: navigationState.pendingSessionId) { _, sessionId in
                 if let sessionId {
                     navigateToSessionId = sessionId

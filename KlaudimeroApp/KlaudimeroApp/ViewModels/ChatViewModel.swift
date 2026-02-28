@@ -16,7 +16,7 @@ class ChatViewModel: ObservableObject {
     }
 
     func loadSessionIfNeeded() async {
-        guard session == nil && !isLoading else { return }
+        guard !isLoading else { return }
         await loadSession()
     }
 
