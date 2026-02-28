@@ -24,9 +24,15 @@ struct JobListView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(job.name)
                                     .font(.headline)
-                                Text(job.schedule)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                if let nextRun = job.nextRun {
+                                    Text("Next: \(nextRun, style: .relative)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text(job.schedule)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                             Spacer()
                             if !job.enabled {

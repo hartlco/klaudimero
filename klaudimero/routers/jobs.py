@@ -12,8 +12,22 @@ router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 
 @router.get("")
-async def list_jobs() -> list[Job]:
-    return load_all_jobs()
+async def list_jobs() -> list[dict]:
+    from ..scheduler import get_scheduler
+
+    jobs = load_all_jobs()
+    scheduler = get_scheduler()
+    result = []
+    for job in jobs:
+        data = job.model_dump(mode="json")
+        # Include next_run from the scheduler if available
+        aps_job = scheduler.get_job(job.id)
+        if aps_job and aps_job.next_run_time:
+            data["next_run"] = aps_job.next_run_time.isoformat()
+        else:
+            data["next_run"] = None
+        result.append(data)
+    return result
 
 
 @router.post("", status_code=201)
@@ -33,11 +47,20 @@ async def create_job(data: JobCreate) -> Job:
 
 
 @router.get("/{job_id}")
-async def get_job(job_id: str) -> Job:
+async def get_job(job_id: str) -> dict:
+    from ..scheduler import get_scheduler
+
     job = load_job(job_id)
     if not job:
         raise HTTPException(404, "Job not found")
-    return job
+    data = job.model_dump(mode="json")
+    scheduler = get_scheduler()
+    aps_job = scheduler.get_job(job.id)
+    if aps_job and aps_job.next_run_time:
+        data["next_run"] = aps_job.next_run_time.isoformat()
+    else:
+        data["next_run"] = None
+    return data
 
 
 @router.put("/{job_id}")

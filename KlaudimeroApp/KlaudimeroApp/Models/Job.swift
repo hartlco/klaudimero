@@ -8,6 +8,7 @@ struct Job: Codable, Identifiable {
     var enabled: Bool
     var maxTurns: Int
     var notifyOn: [String]
+    var nextRun: Date?
     let createdAt: Date
     var updatedAt: Date
 
@@ -15,6 +16,7 @@ struct Job: Codable, Identifiable {
         case id, name, prompt, schedule, enabled
         case maxTurns = "max_turns"
         case notifyOn = "notify_on"
+        case nextRun = "next_run"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }

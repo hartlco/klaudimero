@@ -4,6 +4,8 @@ import asyncio
 import logging
 import re
 
+import zoneinfo
+
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
@@ -15,11 +17,13 @@ logger = logging.getLogger("klaudimero.scheduler")
 
 _scheduler: AsyncIOScheduler | None = None
 
+USER_TZ = zoneinfo.ZoneInfo("Europe/Berlin")
+
 
 def get_scheduler() -> AsyncIOScheduler:
     global _scheduler
     if _scheduler is None:
-        _scheduler = AsyncIOScheduler()
+        _scheduler = AsyncIOScheduler(timezone=USER_TZ)
     return _scheduler
 
 
@@ -50,12 +54,12 @@ def parse_schedule(schedule: str) -> CronTrigger | IntervalTrigger:
     if daily_match:
         hour = int(daily_match.group(1))
         minute = int(daily_match.group(2))
-        return CronTrigger(hour=hour, minute=minute)
+        return CronTrigger(hour=hour, minute=minute, timezone=USER_TZ)
 
     # Standard cron expression
     parts = schedule.split()
     if len(parts) == 5:
-        return CronTrigger.from_crontab(schedule)
+        return CronTrigger.from_crontab(schedule, timezone=USER_TZ)
 
     raise ValueError(f"Cannot parse schedule: {schedule!r}")
 

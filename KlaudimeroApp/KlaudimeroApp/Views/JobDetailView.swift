@@ -17,6 +17,9 @@ struct JobDetailView: View {
         List {
             Section("Configuration") {
                 LabeledContent("Schedule", value: job.schedule)
+                if let nextRun = job.nextRun {
+                    LabeledContent("Next Run", value: nextRun.formatted(date: .abbreviated, time: .shortened))
+                }
                 LabeledContent("Max Turns", value: "\(job.maxTurns)")
                 LabeledContent("Enabled", value: job.enabled ? "Yes" : "No")
                 LabeledContent("Notify On", value: job.notifyOn.joined(separator: ", "))
