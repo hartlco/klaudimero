@@ -10,7 +10,9 @@ struct HeartbeatPromptEditView: View {
             .font(.body.monospaced())
             .padding(4)
             .navigationTitle("Edit Prompt")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {

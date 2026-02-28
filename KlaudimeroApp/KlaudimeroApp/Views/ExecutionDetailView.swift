@@ -36,7 +36,7 @@ struct ExecutionDetailView: View {
                         .font(.body.monospaced())
                         .padding(8)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
+                        .background(Color.platformGray6)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
 
@@ -56,6 +56,8 @@ struct ExecutionDetailView: View {
             .padding()
         }
         .navigationTitle("Execution")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
     }
 }

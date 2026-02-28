@@ -9,8 +9,10 @@ struct SettingsView: View {
         Form {
             Section("Server") {
                 TextField("Server URL", text: $serverURL)
+                    #if os(iOS)
                     .autocapitalization(.none)
                     .keyboardType(.URL)
+                    #endif
                     .textContentType(.URL)
                 Text("e.g. http://martins-machine:8585")
                     .font(.caption)

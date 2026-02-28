@@ -9,7 +9,11 @@ class NavigationState: ObservableObject {
 
 @main
 struct KlaudimeroApp: App {
+    #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    #elseif os(macOS)
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    #endif
     @StateObject private var navigationState = NavigationState.shared
     @StateObject private var chatStore = ChatStore.shared
 
@@ -49,6 +53,9 @@ extension String: @retroactive Identifiable {
     public var id: String { self }
 }
 
+#if os(iOS)
+import UIKit
+
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UNUserNotificationCenter.current().delegate = self
@@ -83,3 +90,41 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         completionHandler()
     }
 }
+
+#elseif os(macOS)
+import AppKit
+
+class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        UNUserNotificationCenter.current().delegate = self
+        NotificationService.shared.requestPermission()
+    }
+
+    func application(_ application: NSApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        NotificationService.shared.registerToken(deviceToken)
+    }
+
+    func application(_ application: NSApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register for remote notifications: \(error)")
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound])
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        if let sessionId = userInfo["session_id"] as? String, !sessionId.isEmpty {
+            DispatchQueue.main.async {
+                NavigationState.shared.selectedTab = 0
+                NavigationState.shared.pendingSessionId = sessionId
+            }
+        } else if let executionId = userInfo["execution_id"] as? String {
+            DispatchQueue.main.async {
+                NavigationState.shared.pendingExecutionId = executionId
+            }
+        }
+        completionHandler()
+    }
+}
+#endif

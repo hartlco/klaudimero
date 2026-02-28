@@ -29,6 +29,7 @@
 		A10000010000000000000014 /* ChatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* ChatStore.swift */; };
 		C52B4B922F52C43100DA5655 /* Kalimero-icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = C52B4B8F2F52C38500DA5655 /* Kalimero-icon.icon */; };
 		MD000001000000000000001A /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = MD000001000000000000001B /* MarkdownUI */; };
+		A10000010000000000000015 /* Color+Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* Color+Platform.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,8 @@
 		C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KlaudimeroApp.entitlements; sourceTree = "<group>"; };
 		C52510972F51802D00731DE3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C52B4B8F2F52C38500DA5655 /* Kalimero-icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Kalimero-icon.icon"; sourceTree = "<group>"; };
+		A20000010000000000000015 /* Color+Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Platform.swift"; sourceTree = "<group>"; };
+		A20000010000000000000016 /* KlaudimeroApp.macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "KlaudimeroApp.macOS.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,17 +79,27 @@
 			);
 			sourceTree = "<group>";
 		};
+		A40000010000000000000008 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000015 /* Color+Platform.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		A40000010000000000000002 /* KlaudimeroApp */ = {
 			isa = PBXGroup;
 			children = (
 				C52B4B8F2F52C38500DA5655 /* Kalimero-icon.icon */,
 				C52510972F51802D00731DE3 /* Info.plist */,
 				C52510962F517FE900731DE3 /* KlaudimeroApp.entitlements */,
+				A20000010000000000000016 /* KlaudimeroApp.macOS.entitlements */,
 				A20000010000000000000001 /* KlaudimeroApp.swift */,
 				A40000010000000000000003 /* Models */,
 				A40000010000000000000004 /* Services */,
 				A40000010000000000000005 /* Views */,
 				A40000010000000000000007 /* ViewModels */,
+				A40000010000000000000008 /* Extensions */,
 			);
 			path = KlaudimeroApp;
 			sourceTree = "<group>";
@@ -231,6 +244,7 @@
 				A10000010000000000000012 /* ChatDetailView.swift in Sources */,
 				A10000010000000000000013 /* ChatViewModel.swift in Sources */,
 				A10000010000000000000014 /* ChatStore.swift in Sources */,
+				A10000010000000000000015 /* Color+Platform.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -282,9 +296,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -333,8 +349,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -348,7 +366,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Kalimero-icon";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = KlaudimeroApp/KlaudimeroApp.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = KlaudimeroApp/KlaudimeroApp.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = KlaudimeroApp/KlaudimeroApp.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "KlaudimeroApp/KlaudimeroApp.macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -363,9 +383,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.hartl.KlaudimeroApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -376,7 +399,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Kalimero-icon";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = KlaudimeroApp/KlaudimeroApp.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = KlaudimeroApp/KlaudimeroApp.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = KlaudimeroApp/KlaudimeroApp.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "KlaudimeroApp/KlaudimeroApp.macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -391,9 +416,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.hartl.KlaudimeroApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

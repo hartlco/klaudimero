@@ -2,6 +2,12 @@ import SwiftUI
 import PhotosUI
 import MarkdownUI
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 /// Outer shell: resolves the ChatViewModel from ChatStore and hands it to the
 /// inner view as an @ObservedObject so published-property changes trigger redraws.
 struct ChatDetailView: View {
@@ -40,7 +46,9 @@ private struct ChatDetailContentView: View {
             inputBar
         }
         .navigationTitle(viewModel.session?.title.isEmpty == false ? viewModel.session!.title : "New Chat")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .task {
             await viewModel.loadSessionIfNeeded()
         }
@@ -56,6 +64,7 @@ private struct ChatDetailContentView: View {
             }
         }
         .photosPicker(isPresented: $showPhotosPicker, selection: $selectedPhotos, maxSelectionCount: 4, matching: .images)
+        #if os(iOS)
         .fullScreenCover(isPresented: $showCamera) {
             CameraPicker { image in
                 if let resized = Self.resizeImageData(image, maxDimension: 1500) {
@@ -64,6 +73,7 @@ private struct ChatDetailContentView: View {
             }
             .ignoresSafeArea()
         }
+        #endif
     }
 
     private var messageList: some View {
@@ -115,7 +125,7 @@ private struct ChatDetailContentView: View {
         switch sourceType {
         case "job": return Color.orange.opacity(0.12)
         case "heartbeat": return Color.pink.opacity(0.12)
-        default: return Color(.systemGray6)
+        default: return Color.platformGray6
         }
     }
 
@@ -170,7 +180,7 @@ private struct ChatDetailContentView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     case .failure:
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemGray4))
+                            .fill(Color.platformGray4)
                             .frame(width: 120, height: 120)
                             .overlay {
                                 Image(systemName: "photo")
@@ -178,7 +188,7 @@ private struct ChatDetailContentView: View {
                             }
                     default:
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemGray5))
+                            .fill(Color.platformGray5)
                             .frame(width: 120, height: 120)
                             .overlay { ProgressView() }
                     }
@@ -192,6 +202,7 @@ private struct ChatDetailContentView: View {
             HStack(spacing: 8) {
                 ForEach(selectedImageData.indices, id: \.self) { index in
                     ZStack(alignment: .topTrailing) {
+                        #if os(iOS)
                         if let uiImage = UIImage(data: selectedImageData[index].0) {
                             Image(uiImage: uiImage)
                                 .resizable()
@@ -199,6 +210,15 @@ private struct ChatDetailContentView: View {
                                 .frame(width: 60, height: 60)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
+                        #elseif os(macOS)
+                        if let nsImage = NSImage(data: selectedImageData[index].0) {
+                            Image(nsImage: nsImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                        #endif
                         Button {
                             selectedImageData.remove(at: index)
                             selectedPhotos = []
@@ -218,10 +238,16 @@ private struct ChatDetailContentView: View {
     }
 
     private static func resizeImageData(_ data: Data, maxDimension: CGFloat) -> Data? {
+        #if os(iOS)
         guard let image = UIImage(data: data) else { return nil }
         return resizeImageData(image, maxDimension: maxDimension)
+        #elseif os(macOS)
+        guard let image = NSImage(data: data) else { return nil }
+        return resizeImageData(image, maxDimension: maxDimension)
+        #endif
     }
 
+    #if os(iOS)
     private static func resizeImageData(_ image: UIImage, maxDimension: CGFloat) -> Data? {
         let size = image.size
         guard size.width > maxDimension || size.height > maxDimension else {
@@ -235,15 +261,32 @@ private struct ChatDetailContentView: View {
         }
         return resized.jpegData(compressionQuality: 0.8)
     }
+    #elseif os(macOS)
+    private static func resizeImageData(_ image: NSImage, maxDimension: CGFloat) -> Data? {
+        let size = image.size
+        guard size.width > maxDimension || size.height > maxDimension else {
+            return image.jpegData(compressionQuality: 0.8)
+        }
+        let scale = maxDimension / max(size.width, size.height)
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+        let newImage = NSImage(size: newSize)
+        newImage.lockFocus()
+        image.draw(in: CGRect(origin: .zero, size: newSize))
+        newImage.unlockFocus()
+        return newImage.jpegData(compressionQuality: 0.8)
+    }
+    #endif
 
     private var inputBar: some View {
         HStack(spacing: 8) {
             Menu {
+                #if os(iOS)
                 Button {
                     showCamera = true
                 } label: {
                     Label("Take Photo", systemImage: "camera")
                 }
+                #endif
                 Button {
                     showPhotosPicker = true
                 } label: {
@@ -261,7 +304,7 @@ private struct ChatDetailContentView: View {
                 .lineLimit(1...5)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(Color(.systemGray6))
+                .background(Color.platformGray6)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
 
             Button {
@@ -283,6 +326,7 @@ private struct ChatDetailContentView: View {
     }
 }
 
+#if os(iOS)
 private struct CameraPicker: UIViewControllerRepresentable {
     @Environment(\.dismiss) private var dismiss
     let onCapture: (UIImage) -> Void
@@ -321,3 +365,14 @@ private struct CameraPicker: UIViewControllerRepresentable {
         }
     }
 }
+#endif
+
+#if os(macOS)
+extension NSImage {
+    func jpegData(compressionQuality: CGFloat) -> Data? {
+        guard let tiffData = tiffRepresentation,
+              let bitmap = NSBitmapImageRep(data: tiffData) else { return nil }
+        return bitmap.representation(using: .jpeg, properties: [.compressionFactor: compressionQuality])
+    }
+}
+#endif
