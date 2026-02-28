@@ -51,6 +51,7 @@ private struct ChatDetailContentView: View {
         #endif
         .task {
             await viewModel.loadSessionIfNeeded()
+            isInputFocused = true
         }
         .onChange(of: selectedPhotos) { _, newItems in
             Task {
@@ -302,11 +303,11 @@ private struct ChatDetailContentView: View {
     private func sendMessage() {
         let content = messageText
         let images = selectedImageData
-        isInputFocused = false
         messageText = ""
         selectedImageData = []
         selectedPhotos = []
         Task { await viewModel.sendMessage(content, imageDataItems: images) }
+        isInputFocused = true
     }
 
     private var inputBar: some View {
@@ -330,6 +331,18 @@ private struct ChatDetailContentView: View {
                     .foregroundStyle(.secondary)
             }
 
+            #if os(macOS)
+            TextEditor(text: $messageText)
+                .focused($isInputFocused)
+                .font(.body)
+                .scrollContentBackground(.hidden)
+                .frame(minHeight: 36, maxHeight: 120)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.platformGray6)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+            #else
             TextField("Message", text: $messageText, axis: .vertical)
                 .focused($isInputFocused)
                 .textFieldStyle(.plain)
@@ -338,6 +351,7 @@ private struct ChatDetailContentView: View {
                 .padding(.vertical, 8)
                 .background(Color.platformGray6)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
+            #endif
 
             Button {
                 sendMessage()
