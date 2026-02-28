@@ -113,6 +113,7 @@ class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
     content: str
     images: list[str] = []
+    timestamp: datetime = Field(default_factory=_utcnow)
 
 
 class ChatRequest(BaseModel):

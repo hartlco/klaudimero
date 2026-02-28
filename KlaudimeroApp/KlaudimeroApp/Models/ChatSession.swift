@@ -36,9 +36,10 @@ struct ChatMessage: Codable, Identifiable {
     let role: String
     let content: String
     var images: [String]
+    let timestamp: Date?
 
     enum CodingKeys: String, CodingKey {
-        case role, content, images
+        case role, content, images, timestamp
     }
 
     init(role: String, content: String, images: [String] = []) {
@@ -46,6 +47,7 @@ struct ChatMessage: Codable, Identifiable {
         self.role = role
         self.content = content
         self.images = images
+        self.timestamp = Date()
     }
 
     init(from decoder: Decoder) throws {
@@ -54,6 +56,7 @@ struct ChatMessage: Codable, Identifiable {
         self.role = try container.decode(String.self, forKey: .role)
         self.content = try container.decode(String.self, forKey: .content)
         self.images = (try? container.decode([String].self, forKey: .images)) ?? []
+        self.timestamp = try? container.decode(Date.self, forKey: .timestamp)
     }
 }
 

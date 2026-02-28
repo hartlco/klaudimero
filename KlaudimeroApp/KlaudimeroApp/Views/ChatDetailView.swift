@@ -143,6 +143,12 @@ private struct ChatDetailContentView: View {
                         .background(assistantBubbleColor)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
+
+                if let timestamp = message.timestamp {
+                    Text(timestamp, style: .time)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             if message.role == "assistant" { Spacer(minLength: 40) }
