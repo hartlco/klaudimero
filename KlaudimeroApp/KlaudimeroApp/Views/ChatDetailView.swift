@@ -95,8 +95,12 @@ private struct ChatDetailContentView: View {
                         }
                         .id("loading")
                     }
+                    Color.clear.frame(height: 1).id("bottom")
                 }
                 .padding()
+            }
+            .onAppear {
+                scrollToBottom(proxy, animated: false)
             }
             .onChange(of: viewModel.session?.messages.count) { _, _ in
                 scrollToBottom(proxy)
@@ -107,12 +111,14 @@ private struct ChatDetailContentView: View {
         }
     }
 
-    private func scrollToBottom(_ proxy: ScrollViewProxy) {
-        withAnimation {
-            if viewModel.isSending {
-                proxy.scrollTo("loading", anchor: .bottom)
-            } else if let lastMessage = viewModel.session?.messages.last {
-                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+    private func scrollToBottom(_ proxy: ScrollViewProxy, animated: Bool = true) {
+        DispatchQueue.main.async {
+            if animated {
+                withAnimation {
+                    proxy.scrollTo("bottom", anchor: .bottom)
+                }
+            } else {
+                proxy.scrollTo("bottom", anchor: .bottom)
             }
         }
     }
