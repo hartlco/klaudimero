@@ -31,6 +31,7 @@ async def run_job(job: Job) -> Execution:
             job.prompt,
             "--output-format", "text",
             "--max-turns", str(job.max_turns),
+            "--dangerously-skip-permissions",
         ]
 
         proc = await asyncio.create_subprocess_exec(

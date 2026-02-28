@@ -86,6 +86,7 @@ async def run_heartbeat() -> Execution:
                 full_prompt,
                 "--output-format", "text",
                 "--max-turns", str(config.max_turns),
+                "--dangerously-skip-permissions",
             ]
 
             proc = await asyncio.create_subprocess_exec(
