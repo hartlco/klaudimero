@@ -177,6 +177,14 @@ def load_all_chat_sessions() -> list[ChatSession]:
     return sessions
 
 
+def find_chat_session_by_source(source_type: str, source_id: str) -> ChatSession | None:
+    for path in CHAT_SESSIONS_DIR.glob("*.json"):
+        session = ChatSession.model_validate_json(path.read_text())
+        if session.source_type == source_type and session.source_id == source_id:
+            return session
+    return None
+
+
 def delete_chat_session(session_id: str) -> bool:
     path = CHAT_SESSIONS_DIR / f"{session_id}.json"
     if path.exists():

@@ -44,6 +44,7 @@ class Job(BaseModel):
     enabled: bool = True
     max_turns: int = 50
     notify_on: list[str] = Field(default_factory=lambda: ["completed", "failed"])
+    chat_session_id: Optional[str] = None
     created_at: datetime = Field(default_factory=_utcnow)
     updated_at: datetime = Field(default_factory=_utcnow)
 
@@ -76,6 +77,7 @@ class HeartbeatConfig(BaseModel):
     enabled: bool = False
     interval_minutes: int = 30
     max_turns: int = 50
+    chat_session_id: Optional[str] = None
 
 
 class HeartbeatConfigUpdate(BaseModel):
@@ -121,5 +123,7 @@ class ChatSession(BaseModel):
     id: str = Field(default_factory=_new_id)
     title: str = ""
     messages: list[ChatMessage] = []
+    source_type: Optional[str] = None  # "job", "heartbeat", or None for regular chat
+    source_id: Optional[str] = None    # job_id or "__heartbeat__"
     created_at: datetime = Field(default_factory=_utcnow)
     updated_at: datetime = Field(default_factory=_utcnow)

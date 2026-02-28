@@ -9,11 +9,14 @@ from datetime import datetime, timezone
 from apscheduler.triggers.interval import IntervalTrigger
 
 from .config import HEARTBEAT_JOB_ID
-from .models import Execution, ExecutionStatus, HeartbeatConfig
+from .models import ChatMessage, ChatSession, Execution, ExecutionStatus, HeartbeatConfig
 from .storage import (
     cleanup_old_executions,
+    load_chat_session,
     load_heartbeat_config,
     load_heartbeat_prompt,
+    save_chat_session,
+    save_heartbeat_config,
     save_heartbeat_prompt,
     save_execution,
 )
@@ -130,11 +133,34 @@ async def run_heartbeat() -> Execution:
         execution.output = output
         save_execution(execution)
 
+        # Append output to heartbeat chat thread
+        _append_to_heartbeat_thread(config, execution)
+
         if should_notify:
             event = "completed" if execution.status != ExecutionStatus.failed else "failed"
-            await notify_heartbeat_event(execution, event)
+            await notify_heartbeat_event(execution, event, session_id=config.chat_session_id or "")
 
         return execution
+
+
+def _append_to_heartbeat_thread(config: HeartbeatConfig, execution: Execution) -> None:
+    """Create or load the heartbeat's chat session and append the execution output."""
+    session = None
+    if config.chat_session_id:
+        session = load_chat_session(config.chat_session_id)
+
+    if not session:
+        session = ChatSession(
+            title="Heartbeat",
+            source_type="heartbeat",
+            source_id=HEARTBEAT_JOB_ID,
+        )
+        config.chat_session_id = session.id
+        save_heartbeat_config(config)
+
+    session.messages.append(ChatMessage(role="assistant", content=execution.output))
+    session.updated_at = datetime.now(timezone.utc)
+    save_chat_session(session)
 
 
 def schedule_heartbeat(config: HeartbeatConfig) -> None:

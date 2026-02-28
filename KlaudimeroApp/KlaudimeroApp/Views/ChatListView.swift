@@ -3,6 +3,7 @@ import SwiftUI
 struct ChatListView: View {
     @EnvironmentObject var api: APIClient
     @EnvironmentObject var chatStore: ChatStore
+    @EnvironmentObject var navigationState: NavigationState
     @State private var sessions: [ChatSessionSummary] = []
     @State private var isLoading = false
     @State private var error: String?
@@ -13,13 +14,19 @@ struct ChatListView: View {
             List {
                 ForEach(sessions) { session in
                     NavigationLink(destination: ChatDetailView(sessionId: session.id)) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(session.title.isEmpty ? "New Chat" : session.title)
-                                .font(.headline)
-                                .lineLimit(1)
-                            Text(session.updatedAt, style: .relative)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                        HStack(spacing: 10) {
+                            Image(systemName: iconName(for: session.sourceType))
+                                .foregroundStyle(iconColor(for: session.sourceType))
+                                .font(.title3)
+                                .frame(width: 24)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(session.title.isEmpty ? "New Chat" : session.title)
+                                    .font(.headline)
+                                    .lineLimit(1)
+                                Text(session.updatedAt, style: .relative)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                         .padding(.vertical, 4)
                     }
@@ -52,6 +59,12 @@ struct ChatListView: View {
             .navigationDestination(item: $navigateToSessionId) { sessionId in
                 ChatDetailView(sessionId: sessionId)
             }
+            .onChange(of: navigationState.pendingSessionId) { _, sessionId in
+                if let sessionId {
+                    navigateToSessionId = sessionId
+                    navigationState.pendingSessionId = nil
+                }
+            }
         }
     }
 
@@ -73,6 +86,22 @@ struct ChatListView: View {
             await loadSessions()
         } catch {
             self.error = error.localizedDescription
+        }
+    }
+
+    private func iconName(for sourceType: String?) -> String {
+        switch sourceType {
+        case "job": return "clock.arrow.circlepath"
+        case "heartbeat": return "heart.circle"
+        default: return "bubble.left"
+        }
+    }
+
+    private func iconColor(for sourceType: String?) -> Color {
+        switch sourceType {
+        case "job": return .orange
+        case "heartbeat": return .pink
+        default: return .accentColor
         }
     }
 

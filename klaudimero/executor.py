@@ -5,8 +5,8 @@ import os
 import time
 from datetime import datetime, timezone
 
-from .models import Execution, ExecutionStatus, Job
-from .storage import save_execution
+from .models import ChatMessage, ChatSession, Execution, ExecutionStatus, Job
+from .storage import load_chat_session, save_chat_session, save_execution, save_job
 
 
 async def run_job(job: Job) -> Execution:
@@ -64,8 +64,32 @@ async def run_job(job: Job) -> Execution:
     execution.finished_at = datetime.now(timezone.utc)
     save_execution(execution)
 
+    # Append output to job's chat thread
+    _append_to_job_thread(job, execution)
+
     event = "completed" if execution.status == ExecutionStatus.completed else "failed"
     if event in job.notify_on:
         await notify_job_event(job, execution, event)
 
     return execution
+
+
+def _append_to_job_thread(job: Job, execution: Execution) -> None:
+    """Create or load the job's chat session and append the execution output."""
+    session = None
+    if job.chat_session_id:
+        session = load_chat_session(job.chat_session_id)
+
+    if not session:
+        session = ChatSession(
+            title=job.name,
+            source_type="job",
+            source_id=job.id,
+            messages=[ChatMessage(role="user", content=job.prompt)],
+        )
+        job.chat_session_id = session.id
+        save_job(job)
+
+    session.messages.append(ChatMessage(role="assistant", content=execution.output))
+    session.updated_at = datetime.now(timezone.utc)
+    save_chat_session(session)

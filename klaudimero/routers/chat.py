@@ -24,6 +24,7 @@ async def list_sessions() -> list[dict]:
         {
             "id": s.id,
             "title": s.title,
+            "source_type": s.source_type,
             "updated_at": s.updated_at.isoformat(),
         }
         for s in sessions

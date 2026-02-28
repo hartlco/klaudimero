@@ -4,11 +4,15 @@ struct ChatSession: Codable, Identifiable {
     let id: String
     var title: String
     var messages: [ChatMessage]
+    var sourceType: String?
+    var sourceId: String?
     let createdAt: Date
     var updatedAt: Date
 
     enum CodingKeys: String, CodingKey {
         case id, title, messages
+        case sourceType = "source_type"
+        case sourceId = "source_id"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }
@@ -17,10 +21,12 @@ struct ChatSession: Codable, Identifiable {
 struct ChatSessionSummary: Codable, Identifiable {
     let id: String
     var title: String
+    var sourceType: String?
     var updatedAt: Date
 
     enum CodingKeys: String, CodingKey {
         case id, title
+        case sourceType = "source_type"
         case updatedAt = "updated_at"
     }
 }

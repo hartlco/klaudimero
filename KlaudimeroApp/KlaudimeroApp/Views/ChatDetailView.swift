@@ -76,6 +76,18 @@ private struct ChatDetailContentView: View {
         }
     }
 
+    private var sourceType: String? {
+        viewModel.session?.sourceType
+    }
+
+    private var assistantBubbleColor: Color {
+        switch sourceType {
+        case "job": return Color.orange.opacity(0.12)
+        case "heartbeat": return Color.pink.opacity(0.12)
+        default: return Color(.systemGray6)
+        }
+    }
+
     private func messageBubble(_ message: ChatMessage) -> some View {
         HStack {
             if message.role == "user" { Spacer(minLength: 40) }
@@ -93,7 +105,7 @@ private struct ChatDetailContentView: View {
                         .textSelection(.enabled)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Color(.systemGray6))
+                        .background(assistantBubbleColor)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
             }

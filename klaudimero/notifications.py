@@ -44,7 +44,7 @@ async def notify_job_event(job: Job, execution: Execution, event: str) -> None:
     }
     bodies = {
         "started": f"Running: {job.prompt[:100]}",
-        "completed": f"Finished in {execution.duration_seconds or 0:.1f}s",
+        "completed": execution.output.strip()[:100] if execution.output else f"Finished in {execution.duration_seconds or 0:.1f}s",
         "failed": f"Exit code: {execution.exit_code}",
     }
 
@@ -73,6 +73,7 @@ async def notify_job_event(job: Job, execution: Execution, event: str) -> None:
                     },
                     "job_id": job.id,
                     "execution_id": execution.id,
+                    "session_id": job.chat_session_id or "",
                     "event": event,
                 },
             )
@@ -85,7 +86,7 @@ async def notify_job_event(job: Job, execution: Execution, event: str) -> None:
         logger.error(f"APNs error: {e}")
 
 
-async def notify_heartbeat_event(execution: Execution, event: str) -> None:
+async def notify_heartbeat_event(execution: Execution, event: str, session_id: str = "") -> None:
     """Send push notification for heartbeat execution."""
     apns_config = load_apns_config()
     if not apns_config:
@@ -138,6 +139,7 @@ async def notify_heartbeat_event(execution: Execution, event: str) -> None:
                     },
                     "heartbeat": True,
                     "execution_id": execution.id,
+                    "session_id": session_id,
                     "event": event,
                 },
             )

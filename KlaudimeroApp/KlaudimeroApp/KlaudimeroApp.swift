@@ -3,6 +3,8 @@ import SwiftUI
 class NavigationState: ObservableObject {
     static let shared = NavigationState()
     @Published var pendingExecutionId: String?
+    @Published var pendingSessionId: String?
+    @Published var selectedTab: Int = 0
 }
 
 @main
@@ -13,19 +15,22 @@ struct KlaudimeroApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TabView {
+            TabView(selection: $navigationState.selectedTab) {
                 ChatListView()
                     .tabItem {
                         Label("Chat", systemImage: "bubble.left.and.bubble.right")
                     }
+                    .tag(0)
                 JobListView()
                     .tabItem {
                         Label("Jobs", systemImage: "clock.arrow.circlepath")
                     }
+                    .tag(1)
                 HeartbeatView()
                     .tabItem {
                         Label("Heartbeat", systemImage: "heart.circle")
                     }
+                    .tag(2)
             }
             .environmentObject(APIClient.shared)
             .environmentObject(navigationState)
@@ -65,7 +70,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-        if let executionId = userInfo["execution_id"] as? String {
+        if let sessionId = userInfo["session_id"] as? String, !sessionId.isEmpty {
+            DispatchQueue.main.async {
+                NavigationState.shared.selectedTab = 0
+                NavigationState.shared.pendingSessionId = sessionId
+            }
+        } else if let executionId = userInfo["execution_id"] as? String {
             DispatchQueue.main.async {
                 NavigationState.shared.pendingExecutionId = executionId
             }
